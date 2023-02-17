@@ -1,4 +1,4 @@
 package co.develhope.studioMedico.services;
 
-public class ServiceMedico {
+public class MedicoService {
 }
