@@ -1,65 +1,31 @@
 package co.develhope.studioMedico.entites;
 
+import co.develhope.studioMedico.enums.GiorniLavorativiEnum;
+
 import javax.persistence.*;
 
 @Table
 @Entity
-public class Medico {
+public class Medico extends Persona {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_medico")
-    private long idMedico;
-    @Column(name = "nome_medico" , nullable = false)
-    private String nome;
-    @Column(name = "cognome_medico" , nullable = false)
-
-    private String cognome;
     @Column(name = "specializzazione" , nullable = false)
-
     private String specializzazione;
-    @Column(name = "email_medico" , nullable = false , unique = true)
-
-    private String emailMedico;
     @Column(name = "contatto_ufficio_medico" , nullable = false)
     private String contattoUfficioMedico;
     @Column(name = "sede_di_lavoro" , nullable = false)
     private String sedeDiLavoro;
+    @Column(name = "giorni_lavorativi" , nullable = false)
+    private GiorniLavorativiEnum giorniLavorativi;
 
-    public Medico(long idMedico, String nomeMedico, String cognomeMedico, String specializzazione, String emailMedico, String contattoUfficioMedico, String sedeDiLavoro) {
-        this.idMedico = idMedico;
-        this.nomeMedico = nomeMedico;
-        this.cognomeMedico = cognomeMedico;
-        this.specializzazione = specializzazione;
-        this.emailMedico = emailMedico;
-        this.contattoUfficioMedico = contattoUfficioMedico;
-        this.sedeDiLavoro = sedeDiLavoro;
-    }
 
     public Medico(){}
 
-    public long getIdMedico() {
-        return idMedico;
-    }
-
-    public void setIdMedico(long idMedico) {
-        this.idMedico = idMedico;
-    }
-
-    public String getNomeMedico() {
-        return nomeMedico;
-    }
-
-    public void setNomeMedico(String nomeMedico) {
-        this.nomeMedico = nomeMedico;
-    }
-
-    public String getCognomeMedico() {
-        return cognomeMedico;
-    }
-
-    public void setCognomeMedico(String cognomeMedico) {
-        this.cognomeMedico = cognomeMedico;
+    public Medico(long id, String nome, String cognome, String email, String specializzazione, String contattoUfficioMedico, String sedeDiLavoro, GiorniLavorativiEnum giorniLavorativi) {
+        super(id, nome, cognome, email);
+        this.specializzazione = specializzazione;
+        this.contattoUfficioMedico = contattoUfficioMedico;
+        this.sedeDiLavoro = sedeDiLavoro;
+        this.giorniLavorativi = giorniLavorativi;
     }
 
     public String getSpecializzazione() {
@@ -68,14 +34,6 @@ public class Medico {
 
     public void setSpecializzazione(String specializzazione) {
         this.specializzazione = specializzazione;
-    }
-
-    public String getEmailMedico() {
-        return emailMedico;
-    }
-
-    public void setEmailMedico(String emailMedico) {
-        this.emailMedico = emailMedico;
     }
 
     public String getContattoUfficioMedico() {
@@ -93,4 +51,13 @@ public class Medico {
     public void setSedeDiLavoro(String sedeDiLavoro) {
         this.sedeDiLavoro = sedeDiLavoro;
     }
+
+    public GiorniLavorativiEnum getGiorniLavorativi() {
+        return giorniLavorativi;
+    }
+
+    public void setGiorniLavorativi(GiorniLavorativiEnum giorniLavorativi) {
+        this.giorniLavorativi = giorniLavorativi;
+    }
+
 }
