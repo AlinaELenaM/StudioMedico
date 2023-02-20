@@ -11,10 +11,10 @@ public class Medico {
     @Column(name = "id_medico")
     private long idMedico;
     @Column(name = "nome_medico" , nullable = false)
-    private String nomeMedico;
+    private String nome;
     @Column(name = "cognome_medico" , nullable = false)
 
-    private String cognomeMedico;
+    private String cognome;
     @Column(name = "specializzazione" , nullable = false)
 
     private String specializzazione;

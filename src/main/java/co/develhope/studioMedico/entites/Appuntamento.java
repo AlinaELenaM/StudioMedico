@@ -1,7 +1,6 @@
 package co.develhope.studioMedico.entites;
 
 import co.develhope.studioMedico.enums.StatoAppuntamento;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 

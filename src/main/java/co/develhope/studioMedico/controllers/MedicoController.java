@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/medico")
 public class MedicoController {
-
+    //TODO cambiare i path con tutto minuscolo e l'underscore
     @Autowired
     private MedicoRepository medicoRepository;
 

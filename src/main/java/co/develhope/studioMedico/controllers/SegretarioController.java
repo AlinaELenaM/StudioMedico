@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/segretario")
 public class SegretarioController {
-
+    //TODO cambiare i path con tutto minuscolo e l'underscore
     @Autowired
     private SegretarioRepository segretarioRepository;
 

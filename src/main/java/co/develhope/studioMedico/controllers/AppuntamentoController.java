@@ -15,7 +15,7 @@ public class AppuntamentoController {
     public AppuntamentoController(AppuntamentoRepository appuntamentoRepository) {
         this.appuntamentoRepository = appuntamentoRepository;
     }
-
+    //TODO cambiare i path con tutto minuscolo e l'underscore
     @PostMapping("/create")
     public Appuntamento createAppuntamento(@RequestBody Appuntamento appuntamento) {
         return appuntamentoRepository.save(appuntamento);
