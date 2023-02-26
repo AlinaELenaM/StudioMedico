@@ -15,18 +15,18 @@ public class AppuntamentoController {
     public AppuntamentoController(AppuntamentoRepository appuntamentoRepository) {
         this.appuntamentoRepository = appuntamentoRepository;
     }
-    //TODO cambiare i path con tutto minuscolo e l'underscore
+
     @PostMapping("/create")
     public Appuntamento createAppuntamento(@RequestBody Appuntamento appuntamento) {
         return appuntamentoRepository.save(appuntamento);
     }
 
-    @GetMapping("/get-all")
+    @GetMapping("/get_all")
     public List<Appuntamento> getAllAppuntamento() {
         return appuntamentoRepository.findAll();
     }
 
-    @GetMapping("/get-one-by-id/{id}")
+    @GetMapping("/get_one_by_id/{id}")
     public Appuntamento getOneById(@PathVariable Long id) {
       return appuntamentoRepository.existsById(id) ? appuntamentoRepository.getById(id) : new Appuntamento();
     }
@@ -36,7 +36,7 @@ public class AppuntamentoController {
         return appuntamentoRepository.saveAndFlush(appuntamento);
     }
 
-    @DeleteMapping("/delete-by-id/{id}")
+    @DeleteMapping("/delete_by_id/{id}")
     public void deleteAppuntamentoById(@PathVariable long id , HttpServletResponse response){
         if(appuntamentoRepository.existsById(id)){
             appuntamentoRepository.deleteById(id);
@@ -46,7 +46,7 @@ public class AppuntamentoController {
     }
 
 
-    @DeleteMapping("/delete-all")
+    @DeleteMapping("/delete_all")
     public void deleteAllAppuntamento(){
         appuntamentoRepository.deleteAll();
     }

@@ -1,4 +1,5 @@
 package co.develhope.studioMedico.controllers;
+import co.develhope.studioMedico.entites.Paziente;
 import co.develhope.studioMedico.repositories.PazienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -7,23 +8,23 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
-@RequestMapping("/segretario")
-public class PazienteController<Paziente> {
+@RequestMapping("/paziente")
+public class PazienteController {
 
     @Autowired
     private PazienteRepository pazienteRepository;
 
     @PostMapping("/create")
     public Paziente createPaziente(@RequestBody Paziente paziente){
-        return PazienteRepository.saveAndFlush(paziente);
+        return pazienteRepository.saveAndFlush(paziente);
     }
 
-    @GetMapping("/readAll")
+    @GetMapping("/read_all")
     public List<Paziente> getAll(){
         return (List<Paziente>) pazienteRepository.findAll();
     }
 
-    @GetMapping("/readOne/{id}")
+    @GetMapping("/read_one/{id}")
     public Paziente getOne(@PathVariable long id){
         return pazienteRepository.existsById(id) ? pazienteRepository.getById(id) : new Paziente();
     }
@@ -31,11 +32,11 @@ public class PazienteController<Paziente> {
     @PutMapping("/update/{id}")
     public Paziente pazienteUpdate(@PathVariable long id , @RequestBody Paziente paziente){
         paziente.setId(id);
-        return PazienteRepository.saveAndFlush(paziente);
+        return pazienteRepository.saveAndFlush(paziente);
     }
 
 
-    @DeleteMapping("/deleteOne/{id}")
+    @DeleteMapping("/delete_one/{id}")
     public void deleteOne(@PathVariable long id , HttpServletResponse response){
         if(pazienteRepository.existsById(id)){
             pazienteRepository.deleteById(id);
@@ -45,7 +46,7 @@ public class PazienteController<Paziente> {
     }
 
 
-    @DeleteMapping("/deleteAll")
+    @DeleteMapping("/delete_all")
     public void deleteAll(){
         pazienteRepository.deleteAll();
     }

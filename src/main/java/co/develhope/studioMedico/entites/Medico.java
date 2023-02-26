@@ -10,8 +10,6 @@ public class Medico extends Persona {
 
     @Column(name = "specializzazione" , nullable = false)
     private String specializzazione;
-    @Column(name = "contatto_ufficio_medico" , nullable = false)
-    private String contattoUfficioMedico;
     @Column(name = "sede_di_lavoro" , nullable = false)
     private String sedeDiLavoro;
     @Column(name = "giorni_lavorativi" , nullable = false)
@@ -20,10 +18,9 @@ public class Medico extends Persona {
 
     public Medico(){}
 
-    public Medico(long id, String nome, String cognome, String email, String specializzazione, String contattoUfficioMedico, String sedeDiLavoro, GiorniLavorativiEnum giorniLavorativi) {
-        super(id, nome, cognome, email);
+    public Medico(long id, String nome, String cognome, String email, String numeroTelefonico, String specializzazione, String sedeDiLavoro, GiorniLavorativiEnum giorniLavorativi) {
+        super(id, nome, cognome, email, numeroTelefonico);
         this.specializzazione = specializzazione;
-        this.contattoUfficioMedico = contattoUfficioMedico;
         this.sedeDiLavoro = sedeDiLavoro;
         this.giorniLavorativi = giorniLavorativi;
     }
@@ -34,14 +31,6 @@ public class Medico extends Persona {
 
     public void setSpecializzazione(String specializzazione) {
         this.specializzazione = specializzazione;
-    }
-
-    public String getContattoUfficioMedico() {
-        return contattoUfficioMedico;
-    }
-
-    public void setContattoUfficioMedico(String contattoUfficioMedico) {
-        this.contattoUfficioMedico = contattoUfficioMedico;
     }
 
     public String getSedeDiLavoro() {

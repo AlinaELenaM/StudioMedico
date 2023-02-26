@@ -16,15 +16,18 @@ public abstract class Persona {
     private String cognome;
     @Column(name = "email", nullable = false , unique = true)
     private String email;
+    @Column(name = "contatto_telefonico", nullable = false, unique = true)
+    private String numeroTelefonico;
 
     public Persona() {
     }
 
-    public Persona(long id, String nome, String cognome, String email) {
+    public Persona(long id, String nome, String cognome, String email, String numeroTelefonico) {
         this.id = id;
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
+        this.numeroTelefonico = numeroTelefonico;
     }
 
     public long getId() {
@@ -57,5 +60,13 @@ public abstract class Persona {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getNumeroTelefonico() {
+        return numeroTelefonico;
+    }
+
+    public void setNumeroTelefonico(String numeroTelefonico) {
+        this.numeroTelefonico = numeroTelefonico;
     }
 }

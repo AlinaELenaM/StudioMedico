@@ -1,68 +1,22 @@
 package co.develhope.studioMedico.entites;
 
+import co.develhope.studioMedico.enums.GiorniLavorativiEnum;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "segretario")
-public class Segretario {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
-    @Column(name = "nome_medico" , nullable = false)
-    private String nomeSegretario;
-
-    @Column(name = "cognome_medico" , nullable = false)
-    private String specializzazione;
-
-    @Column(name = "email_medico" , nullable = false , unique = true)
-    private String emailSegretario;
-
-    @Column(name = "contatto_ufficio_medico" , nullable = false)
-    private String contattoUfficioMedico;
+public class Segretario extends Persona {
 
     @Column(name = "sede_di_lavoro" , nullable = false)
     private String sedeDiLavoro;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Segretario(){}
 
-    public String getNomeSegretario() {
-        return nomeSegretario;
-    }
-
-    public void setNomeSegretario(String nomeSegretario) {
-        this.nomeSegretario = nomeSegretario;
-    }
-
-    public String getSpecializzazione() {
-        return specializzazione;
-    }
-
-    public void setSpecializzazione(String specializzazione) {
-        this.specializzazione = specializzazione;
-    }
-
-    public String getEmailSegretario() {
-        return emailSegretario;
-    }
-
-    public void setEmailSegretario(String emailSegretario) {
-        this.emailSegretario = emailSegretario;
-    }
-
-    public String getContattoUfficioMedico() {
-        return contattoUfficioMedico;
-    }
-
-    public void setContattoUfficioMedico(String contattoUfficioMedico) {
-        this.contattoUfficioMedico = contattoUfficioMedico;
+    public Segretario(long id, String nome, String cognome, String email, String numeroTelefonico, String sedeDiLavoro) {
+        super(id, nome, cognome, email, numeroTelefonico);
+        this.sedeDiLavoro = sedeDiLavoro;
     }
 
     public String getSedeDiLavoro() {
@@ -72,4 +26,5 @@ public class Segretario {
     public void setSedeDiLavoro(String sedeDiLavoro) {
         this.sedeDiLavoro = sedeDiLavoro;
     }
+
 }

@@ -11,18 +11,18 @@ public class Paziente extends Persona {
     private String codiceFiscale;
     @Column(name = "indirizzo", nullable = false)
     private String indirizzo;
-    @Column(name = "contatto_telefonico", nullable = false)
-    private String contattoTelefonico;
     @Column(name = "allergie", nullable = false)
     private String allergie;
     @Column(name = "storico_malattie", nullable = false)
     private String storicoMalattie;
 
-    public Paziente(long id, String nome, String cognome, String email, String codiceFiscale, String indirizzo, String contattoTelefonico, String allergie, String storicoMalattie) {
-        super(id, nome, cognome, email);
+    public Paziente() {
+    }
+
+    public Paziente(long id, String nome, String cognome, String email, String numeroTelefonico, String codiceFiscale, String indirizzo, String allergie, String storicoMalattie) {
+        super(id, nome, cognome, email, numeroTelefonico);
         this.codiceFiscale = codiceFiscale;
         this.indirizzo = indirizzo;
-        this.contattoTelefonico = contattoTelefonico;
         this.allergie = allergie;
         this.storicoMalattie = storicoMalattie;
     }
@@ -43,13 +43,6 @@ public class Paziente extends Persona {
         this.indirizzo = indirizzo;
     }
 
-    public String getContattoTelefonico() {
-        return contattoTelefonico;
-    }
-
-    public void setContattoTelefonico(String contattoTelefonico) {
-        this.contattoTelefonico = contattoTelefonico;
-    }
 
     public String getAllergie() {
         return allergie;

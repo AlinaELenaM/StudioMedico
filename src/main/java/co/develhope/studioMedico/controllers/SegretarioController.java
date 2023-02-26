@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/segretario")
 public class SegretarioController {
-    //TODO cambiare i path con tutto minuscolo e l'underscore
+
     @Autowired
     private SegretarioRepository segretarioRepository;
 
@@ -22,12 +22,12 @@ public class SegretarioController {
         return segretarioRepository.saveAndFlush(segretario);
     }
 
-    @GetMapping("/readAll")
+    @GetMapping("/read_all")
     public List<Segretario> getAll(){
         return segretarioRepository.findAll();
     }
 
-    @GetMapping("/readOne/{id}")
+    @GetMapping("/read_one/{id}")
     public Segretario getOne(@PathVariable long id){
         return segretarioRepository.existsById(id) ? segretarioRepository.getById(id) : new Segretario();
     }
@@ -39,7 +39,7 @@ public class SegretarioController {
     }
 
 
-    @DeleteMapping("/deleteOne/{id}")
+    @DeleteMapping("/delete_one/{id}")
     public void deleteOne(@PathVariable long id , HttpServletResponse response){
         if(segretarioRepository.existsById(id)){
             segretarioRepository.deleteById(id);
@@ -49,7 +49,7 @@ public class SegretarioController {
     }
 
 
-    @DeleteMapping("/deleteAll")
+    @DeleteMapping("/delete_all")
     public void deleteAll(){
         segretarioRepository.deleteAll();
     }
