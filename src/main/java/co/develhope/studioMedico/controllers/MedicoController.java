@@ -37,12 +37,14 @@ public class MedicoController {
 
 
     @DeleteMapping("/delete_one/{id}")
-    public void deleteOne(@PathVariable long id , HttpServletResponse response){
+    public Medico deleteOne(@PathVariable long id , @RequestBody boolean attivo ,  HttpServletResponse response){
         if(medicoRepository.existsById(id)){
-            medicoRepository.deleteById(id);
+            medicoRepository.getById(id).setAttivo(attivo);
+            return medicoRepository.saveAndFlush(medicoRepository.getById(id));
         }
         else
             response.setStatus(409);
+        return null;
     }
 
 

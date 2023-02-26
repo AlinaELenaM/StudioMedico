@@ -2,6 +2,7 @@ package co.develhope.studioMedico.entites;
 import co.develhope.studioMedico.enums.GiorniLavorativiEnum;
 
 import javax.persistence.*;
+import java.sql.Date;
 
 @Table
 @Entity
@@ -19,8 +20,8 @@ public class Paziente extends Persona {
     public Paziente() {
     }
 
-    public Paziente(long id, String nome, String cognome, String email, String numeroTelefonico, String codiceFiscale, String indirizzo, String allergie, String storicoMalattie) {
-        super(id, nome, cognome, email, numeroTelefonico);
+    public Paziente(Long id, String nome, String cognome, String email, String numeroTelefonico, Object createdBy, Date creationDate, Object lastModifiedBy, Date lastModifiedDate, boolean attivo, String codiceFiscale, String indirizzo, String allergie, String storicoMalattie) {
+        super(id, nome, cognome, email, numeroTelefonico, createdBy, creationDate, lastModifiedBy, lastModifiedDate, attivo);
         this.codiceFiscale = codiceFiscale;
         this.indirizzo = indirizzo;
         this.allergie = allergie;
