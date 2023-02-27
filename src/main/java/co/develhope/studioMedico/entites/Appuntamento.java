@@ -1,5 +1,6 @@
 package co.develhope.studioMedico.entites;
 
+import co.develhope.studioMedico.enums.AttivoEnum;
 import co.develhope.studioMedico.enums.StatoAppuntamento;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -13,8 +14,7 @@ import java.time.LocalDateTime;
 
 @Table
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-public class Appuntamento <U> {
+public class Appuntamento {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idAppuntamento;
@@ -23,27 +23,22 @@ public class Appuntamento <U> {
     private String noteAppuntamento;
     //updatable flag helps to avoid the override of
     //column's value during the update operation
-    @CreatedBy
     @Column(name = "created_by", updatable = false)
-    private U createdBy;
+    private String createdBy;
     //updatable flag helps to avoid the override of
     //column's value during the update operation
-    @CreatedDate
     @Column(name = "created_date", updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
-    @LastModifiedBy
     @Column(name = "last_modified_by")
-    private U lastModifiedBy;
-    @LastModifiedDate
+    private String lastModifiedBy;
     @Column(name = "last_modified_date")
-    @Temporal(TemporalType.TIMESTAMP)
     private Date lastModifiedDate;
+    //refactor con enumerato active e delete (var 1 - A / D)
     @Column(name = "attivo" , nullable = false)
-    private boolean attivo;
+    private AttivoEnum attivo;
     public Appuntamento(){}
 
-    public Appuntamento(Long idAppuntamento, LocalDateTime orarioAppuntamento, StatoAppuntamento statoAppuntamento, String noteAppuntamento, U createdBy, Date creationDate, U lastModifiedBy, Date lastModifiedDate, boolean attivo) {
+    public Appuntamento(Long idAppuntamento, LocalDateTime orarioAppuntamento, StatoAppuntamento statoAppuntamento, String noteAppuntamento, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate, AttivoEnum attivo) {
         this.idAppuntamento = idAppuntamento;
         this.orarioAppuntamento = orarioAppuntamento;
         this.statoAppuntamento = statoAppuntamento;
@@ -79,44 +74,34 @@ public class Appuntamento <U> {
     public void setNoteAppuntamento(String noteAppuntamento) {
         this.noteAppuntamento = noteAppuntamento;
     }
-
-    public U getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
-
-    public void setCreatedBy(U createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
-
     public Date getCreationDate() {
         return creationDate;
     }
-
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
-
-    public U getLastModifiedBy() {
+    public String getLastModifiedBy() {
         return lastModifiedBy;
     }
-
-    public void setLastModifiedBy(U lastModifiedBy) {
+    public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
-
     public Date getLastModifiedDate() {
         return lastModifiedDate;
     }
-
     public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
-
-    public boolean isAttivo() {
+    public AttivoEnum getAttivo() {
         return attivo;
     }
-
-    public void setAttivo(boolean attivo) {
+    public void setAttivo(AttivoEnum attivo) {
         this.attivo = attivo;
     }
 }

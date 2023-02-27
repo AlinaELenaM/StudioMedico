@@ -1,6 +1,7 @@
 package co.develhope.studioMedico.entites;
 
 
+import co.develhope.studioMedico.enums.AttivoEnum;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -11,13 +12,7 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
-public abstract class Persona <U> {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    private Long id;
+public abstract class Persona {
     @Column(name = "nome", nullable = false)
     private String nome;
     @Column(name = "cognome", nullable = false)
@@ -28,30 +23,23 @@ public abstract class Persona <U> {
     private String numeroTelefonico;
     //updatable flag helps to avoid the override of
     //column's value during the update operation
-    @CreatedBy
     @Column(name = "created_by", updatable = false)
-    private U createdBy;
+    private String createdBy;
     //updatable flag helps to avoid the override of
     //column's value during the update operation
-    @CreatedDate
     @Column(name = "created_date", updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
-    @LastModifiedBy
     @Column(name = "last_modified_by")
-    private U lastModifiedBy;
-    @LastModifiedDate
+    private String lastModifiedBy;
     @Column(name = "last_modified_date")
-    @Temporal(TemporalType.TIMESTAMP)
     private Date lastModifiedDate;
     @Column(name = "attivo" , nullable = false)
-    private boolean attivo;
+    private AttivoEnum attivo;
 
     public Persona() {
     }
 
-    public Persona(Long id, String nome, String cognome, String email, String numeroTelefonico, U createdBy, Date creationDate, U lastModifiedBy, Date lastModifiedDate, boolean attivo) {
-        this.id = id;
+    public Persona(String nome, String cognome, String email, String numeroTelefonico, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate, AttivoEnum attivo) {
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
@@ -61,14 +49,6 @@ public abstract class Persona <U> {
         this.lastModifiedBy = lastModifiedBy;
         this.lastModifiedDate = lastModifiedDate;
         this.attivo = attivo;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getNome() {
@@ -103,15 +83,11 @@ public abstract class Persona <U> {
         this.numeroTelefonico = numeroTelefonico;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public U getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(U createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -123,11 +99,11 @@ public abstract class Persona <U> {
         this.creationDate = creationDate;
     }
 
-    public U getLastModifiedBy() {
+    public String getLastModifiedBy() {
         return lastModifiedBy;
     }
 
-    public void setLastModifiedBy(U lastModifiedBy) {
+    public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
 
@@ -139,11 +115,11 @@ public abstract class Persona <U> {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public boolean isAttivo() {
+    public AttivoEnum getAttivo() {
         return attivo;
     }
 
-    public void setAttivo(boolean attivo) {
+    public void setAttivo(AttivoEnum attivo) {
         this.attivo = attivo;
     }
 }

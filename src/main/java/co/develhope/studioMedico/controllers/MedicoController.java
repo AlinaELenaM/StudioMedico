@@ -1,6 +1,7 @@
 package co.develhope.studioMedico.controllers;
 
 import co.develhope.studioMedico.entites.Medico;
+import co.develhope.studioMedico.enums.AttivoEnum;
 import co.develhope.studioMedico.repositories.MedicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,7 @@ public class MedicoController {
 
 
     @DeleteMapping("/delete_one/{id}")
-    public Medico deleteOne(@PathVariable long id , @RequestBody boolean attivo ,  HttpServletResponse response){
+    public Medico deleteOne(@PathVariable long id , @RequestBody AttivoEnum attivo , HttpServletResponse response){
         if(medicoRepository.existsById(id)){
             medicoRepository.getById(id).setAttivo(attivo);
             return medicoRepository.saveAndFlush(medicoRepository.getById(id));

@@ -1,4 +1,5 @@
 package co.develhope.studioMedico.entites;
+import co.develhope.studioMedico.enums.AttivoEnum;
 import co.develhope.studioMedico.enums.GiorniLavorativiEnum;
 
 import javax.persistence.*;
@@ -7,7 +8,10 @@ import java.sql.Date;
 @Table
 @Entity
 public class Paziente extends Persona {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id_paziente", nullable = false)
+    private Long id;
     @Column(name = "codice_fiscale", nullable = false)
     private String codiceFiscale;
     @Column(name = "indirizzo", nullable = false)
@@ -20,8 +24,9 @@ public class Paziente extends Persona {
     public Paziente() {
     }
 
-    public Paziente(Long id, String nome, String cognome, String email, String numeroTelefonico, Object createdBy, Date creationDate, Object lastModifiedBy, Date lastModifiedDate, boolean attivo, String codiceFiscale, String indirizzo, String allergie, String storicoMalattie) {
-        super(id, nome, cognome, email, numeroTelefonico, createdBy, creationDate, lastModifiedBy, lastModifiedDate, attivo);
+    public Paziente(String nome, String cognome, String email, String numeroTelefonico, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate, AttivoEnum attivo, Long id, String codiceFiscale, String indirizzo, String allergie, String storicoMalattie) {
+        super(nome, cognome, email, numeroTelefonico, createdBy, creationDate, lastModifiedBy, lastModifiedDate, attivo);
+        this.id = id;
         this.codiceFiscale = codiceFiscale;
         this.indirizzo = indirizzo;
         this.allergie = allergie;
@@ -59,5 +64,13 @@ public class Paziente extends Persona {
 
     public void setStoricoMalattie(String storicoMalattie) {
         this.storicoMalattie = storicoMalattie;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
