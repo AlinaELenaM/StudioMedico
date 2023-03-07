@@ -3,7 +3,9 @@ package co.develhope.studioMedico.controllers;
 
 import co.develhope.studioMedico.entites.Segretario;
 
+import co.develhope.studioMedico.enums.AttivoEnum;
 import co.develhope.studioMedico.repositories.SegretarioRepository;
+import co.develhope.studioMedico.services.SegretarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,42 +18,38 @@ public class SegretarioController {
 
     @Autowired
     private SegretarioRepository segretarioRepository;
-
+    @Autowired
+    private SegretarioService segretarioService;
     @PostMapping("/create")
     public Segretario createSegretario(@RequestBody Segretario segretario){
-        return segretarioRepository.saveAndFlush(segretario);
+        return segretarioService.createSegretario(segretario);
     }
 
     @GetMapping("/read_all")
     public List<Segretario> getAll(){
-        return segretarioRepository.findAll();
+        return segretarioService.getAll();
     }
 
     @GetMapping("/read_one/{id}")
     public Segretario getOne(@PathVariable long id){
-        return segretarioRepository.existsById(id) ? segretarioRepository.getById(id) : new Segretario();
+        return segretarioService.getOne(id);
     }
 
     @PutMapping("/update/{id}")
     public Segretario segretarioUpdate(@PathVariable long id , @RequestBody Segretario segretario){
-        segretario.setId(id);
-        return segretarioRepository.saveAndFlush(segretario);
+        return segretarioService.segretarioUpdate(id,segretario);
     }
 
 
     @DeleteMapping("/delete_one/{id}")
-    public void deleteOne(@PathVariable long id , HttpServletResponse response){
-        if(segretarioRepository.existsById(id)){
-            segretarioRepository.deleteById(id);
-        }
-        else
-            response.setStatus(409);
+    public void deleteOne(@PathVariable long id , @PathVariable AttivoEnum attivo){
+        segretarioService.deleteOne(id, attivo);
     }
 
 
     @DeleteMapping("/delete_all")
     public void deleteAll(){
-        segretarioRepository.deleteAll();
+        segretarioService.deleteAll();
     }
 
 
