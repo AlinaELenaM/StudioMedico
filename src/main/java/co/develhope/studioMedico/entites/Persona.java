@@ -1,12 +1,7 @@
 package co.develhope.studioMedico.entites;
 
 
-import co.develhope.studioMedico.enums.AttivoEnum;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import co.develhope.studioMedico.enums.StatusEnumeration;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -33,13 +28,13 @@ public abstract class Persona {
     private String lastModifiedBy;
     @Column(name = "last_modified_date")
     private Date lastModifiedDate;
-    @Column(name = "attivo" , nullable = false)
-    private AttivoEnum attivo;
+    @Column(name = "active", nullable = false)
+    private StatusEnumeration status;
 
     public Persona() {
     }
 
-    public Persona(String nome, String cognome, String email, String numeroTelefonico, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate, AttivoEnum attivo) {
+    public Persona(String nome, String cognome, String email, String numeroTelefonico, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate) {
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
@@ -48,7 +43,8 @@ public abstract class Persona {
         this.creationDate = creationDate;
         this.lastModifiedBy = lastModifiedBy;
         this.lastModifiedDate = lastModifiedDate;
-        this.attivo = attivo;
+        this.status = StatusEnumeration.A;
+
     }
 
     public String getNome() {
@@ -115,11 +111,11 @@ public abstract class Persona {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public AttivoEnum getAttivo() {
-        return attivo;
+    public StatusEnumeration getStatus() {
+        return status;
     }
 
-    public void setAttivo(AttivoEnum attivo) {
-        this.attivo = attivo;
+    public void setStatus(StatusEnumeration status) {
+        this.status = status;
     }
 }

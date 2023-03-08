@@ -1,6 +1,5 @@
 package co.develhope.studioMedico.entites;
-import co.develhope.studioMedico.enums.AttivoEnum;
-import co.develhope.studioMedico.enums.GiorniLavorativiEnum;
+import co.develhope.studioMedico.enums.StatusEnumeration;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -24,8 +23,8 @@ public class Paziente extends Persona {
     public Paziente() {
     }
 
-    public Paziente(String nome, String cognome, String email, String numeroTelefonico, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate, AttivoEnum attivo, Long id, String codiceFiscale, String indirizzo, String allergie, String storicoMalattie) {
-        super(nome, cognome, email, numeroTelefonico, createdBy, creationDate, lastModifiedBy, lastModifiedDate, attivo);
+    public Paziente(String nome, String cognome, String email, String numeroTelefonico, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate, Long id, String codiceFiscale, String indirizzo, String allergie, String storicoMalattie) {
+        super(nome, cognome, email, numeroTelefonico, createdBy, creationDate, lastModifiedBy, lastModifiedDate);
         this.id = id;
         this.codiceFiscale = codiceFiscale;
         this.indirizzo = indirizzo;

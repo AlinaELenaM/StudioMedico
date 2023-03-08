@@ -10,8 +10,4 @@ public enum GiorniLavorativiEnum {
     SABATO,
     DOMENICA;
 
-    GiorniLavorativiEnum(){
-
-    }
-
 }

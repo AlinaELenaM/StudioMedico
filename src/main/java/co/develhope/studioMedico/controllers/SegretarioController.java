@@ -3,13 +3,11 @@ package co.develhope.studioMedico.controllers;
 
 import co.develhope.studioMedico.entites.Segretario;
 
-import co.develhope.studioMedico.enums.AttivoEnum;
 import co.develhope.studioMedico.repositories.SegretarioRepository;
 import co.develhope.studioMedico.services.SegretarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -42,8 +40,8 @@ public class SegretarioController {
 
 
     @DeleteMapping("/delete_one/{id}")
-    public void deleteOne(@PathVariable long id , @PathVariable AttivoEnum attivo){
-        segretarioService.deleteOne(id, attivo);
+    public void deleteOne(@PathVariable long id ){
+        segretarioService.deleteOne(id);
     }
 
 

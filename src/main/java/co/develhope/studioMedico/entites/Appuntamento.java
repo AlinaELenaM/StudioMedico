@@ -1,12 +1,7 @@
 package co.develhope.studioMedico.entites;
 
-import co.develhope.studioMedico.enums.AttivoEnum;
+import co.develhope.studioMedico.enums.StatusEnumeration;
 import co.develhope.studioMedico.enums.StatoAppuntamento;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -35,10 +30,10 @@ public class Appuntamento {
     private Date lastModifiedDate;
     //refactor con enumerato active e delete (var 1 - A / D)
     @Column(name = "attivo" , nullable = false)
-    private AttivoEnum attivo;
+    private StatusEnumeration attivo;
     public Appuntamento(){}
 
-    public Appuntamento(Long idAppuntamento, LocalDateTime orarioAppuntamento, StatoAppuntamento statoAppuntamento, String noteAppuntamento, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate, AttivoEnum attivo) {
+    public Appuntamento(Long idAppuntamento, LocalDateTime orarioAppuntamento, StatoAppuntamento statoAppuntamento, String noteAppuntamento, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate, StatusEnumeration attivo) {
         this.idAppuntamento = idAppuntamento;
         this.orarioAppuntamento = orarioAppuntamento;
         this.statoAppuntamento = statoAppuntamento;
@@ -98,10 +93,10 @@ public class Appuntamento {
     public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
-    public AttivoEnum getAttivo() {
+    public StatusEnumeration getAttivo() {
         return attivo;
     }
-    public void setAttivo(AttivoEnum attivo) {
+    public void setAttivo(StatusEnumeration attivo) {
         this.attivo = attivo;
     }
 }

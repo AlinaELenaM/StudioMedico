@@ -1,14 +1,13 @@
 package co.develhope.studioMedico.entites;
 
-import co.develhope.studioMedico.enums.AttivoEnum;
 import co.develhope.studioMedico.enums.GiorniLavorativiEnum;
 
 import javax.persistence.*;
 import java.sql.Date;
 
-@Table
+@Table(name = "medico")
 @Entity
-public class Medico extends Persona {
+public class MedicoEntity extends Persona {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,10 +21,11 @@ public class Medico extends Persona {
     private GiorniLavorativiEnum giorniLavorativi;
 
 
-    public Medico(){}
 
-    public Medico(String nome, String cognome, String email, String numeroTelefonico, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate, AttivoEnum attivo, Long id, String specializzazione, String sedeDiLavoro, GiorniLavorativiEnum giorniLavorativi) {
-        super(nome, cognome, email, numeroTelefonico, createdBy, creationDate, lastModifiedBy, lastModifiedDate, attivo);
+    public MedicoEntity(){}
+
+    public MedicoEntity(String nome, String cognome, String email, String numeroTelefonico, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate, Long id, String specializzazione, String sedeDiLavoro, GiorniLavorativiEnum giorniLavorativi) {
+        super(nome, cognome, email, numeroTelefonico, createdBy, creationDate, lastModifiedBy, lastModifiedDate);
         this.id = id;
         this.specializzazione = specializzazione;
         this.sedeDiLavoro = sedeDiLavoro;
@@ -63,4 +63,5 @@ public class Medico extends Persona {
     public void setId(Long id) {
         this.id = id;
     }
+
 }
