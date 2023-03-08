@@ -1,7 +1,7 @@
 package co.develhope.studioMedico.controllers;
 
 
-import co.develhope.studioMedico.entites.Segretario;
+import co.develhope.studioMedico.entites.SegretarioEntity;
 
 import co.develhope.studioMedico.repositories.SegretarioRepository;
 import co.develhope.studioMedico.services.SegretarioService;
@@ -13,29 +13,31 @@ import java.util.List;
 @RestController
 @RequestMapping("/segretario")
 public class SegretarioController {
+    /**
+     *
 
     @Autowired
     private SegretarioRepository segretarioRepository;
     @Autowired
     private SegretarioService segretarioService;
     @PostMapping("/create")
-    public Segretario createSegretario(@RequestBody Segretario segretario){
-        return segretarioService.createSegretario(segretario);
+    public SegretarioEntity createSegretario(@RequestBody SegretarioEntity segretarioEntity){
+        return segretarioService.createSegretario(segretarioEntity);
     }
 
     @GetMapping("/read_all")
-    public List<Segretario> getAll(){
+    public List<SegretarioEntity> getAll(){
         return segretarioService.getAll();
     }
 
     @GetMapping("/read_one/{id}")
-    public Segretario getOne(@PathVariable long id){
+    public SegretarioEntity getOne(@PathVariable long id){
         return segretarioService.getOne(id);
     }
 
     @PutMapping("/update/{id}")
-    public Segretario segretarioUpdate(@PathVariable long id , @RequestBody Segretario segretario){
-        return segretarioService.segretarioUpdate(id,segretario);
+    public SegretarioEntity segretarioUpdate(@PathVariable long id , @RequestBody SegretarioEntity segretarioEntity){
+        return segretarioService.segretarioUpdate(id, segretarioEntity);
     }
 
 
@@ -50,5 +52,5 @@ public class SegretarioController {
         segretarioService.deleteAll();
     }
 
-
+     */
 }

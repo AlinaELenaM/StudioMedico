@@ -1,9 +1,12 @@
 package co.develhope.studioMedico.services;
+import co.develhope.studioMedico.entites.MedicoEntity;
 import co.develhope.studioMedico.entites.PazienteEntity;
+import co.develhope.studioMedico.enums.StatusEnumeration;
 import co.develhope.studioMedico.repositories.PazienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -22,16 +25,8 @@ public class PazienteService {
      * @param paziente il paziente
      */
     public PazienteEntity createPaziente(PazienteEntity paziente){
+        paziente.setStatus(StatusEnumeration.A);
         return pazienteRepository.saveAndFlush(paziente);
-    }
-
-    /**
-     * Metodo che restituisce tutti i pazienti.
-     * @return i pazienti
-     */
-    public List<PazienteEntity> getPazienti(){
-
-        return pazienteRepository.findAll();
     }
 
     /**
@@ -40,12 +35,22 @@ public class PazienteService {
      * @param id the id
      * @return the paziente by id
      */
-    public PazienteEntity getPazienteById(Long id) {
-        if(!pazienteRepository.existsById(id)) {
-            throw new EntityNotFoundException("Paziente non trovato");
-        }
-        return pazienteRepository.findById(id).get();
+    public PazienteEntity getPazienteById(Long id) throws Exception {
+        PazienteEntity pazienteEntity = pazienteRepository.getById(id);
+        if(pazienteEntity.getStatus() == StatusEnumeration.D) throw new Exception("Errore: l'utente paziente è disattivo!");
+        if(!pazienteRepository.existsById(id)) throw new EntityNotFoundException("Paziente non trovato");
+        return pazienteEntity;
     }
+
+
+    /**
+     * Metodo che restituisce tutti i pazienti.
+     * @return i pazienti
+     */
+    public List<PazienteEntity> tuttiPazienti(){
+        return pazienteRepository.findByStatus(StatusEnumeration.A);
+    }
+
 
     /**
      * questo metodo verifica l'esistenza "existsById" di un'entità Paziente nel database con un if,
@@ -57,8 +62,7 @@ public class PazienteService {
      * del repository per salvare l'entità aggiornata nel database.
      * Infine, il metodo restituisce l'entità "paziente" aggiornata
      */
-
-    public PazienteEntity updatePazienteById(PazienteEntity pazienteEdit, Long id) {
+    public PazienteEntity modificaPaziente(PazienteEntity pazienteEdit, Long id) {
         if(!pazienteRepository.existsById(id)) {
             throw new EntityNotFoundException("Il paziente non esiste");
         }
@@ -89,9 +93,31 @@ public class PazienteService {
             paziente.setStoricoMalattie(pazienteEdit.getStoricoMalattie());
         }
         return pazienteRepository.saveAndFlush(paziente);
-
-
-        //TODO soft delete
-
     }
+
+    public String cancellaPaziente(Long id , HttpServletResponse response){
+        if(pazienteRepository.existsById(id)){
+            PazienteEntity pazienteEntity = pazienteRepository.getById(id);
+            pazienteEntity.setStatus(StatusEnumeration.D);
+            pazienteRepository.save(pazienteEntity);
+        } else {
+            response.setStatus(409);
+            return "Errore: l'id selezionato non esiste";
+        }
+        return "L'utente paziente è stato disattivato";
+    }
+
+    public String riattivaPaziente(Long id , HttpServletResponse response){
+        if(pazienteRepository.existsById(id)){
+            PazienteEntity pazienteEntity = pazienteRepository.getById(id);
+            pazienteEntity.setStatus(StatusEnumeration.A);
+            pazienteRepository.save(pazienteEntity);
+        } else {
+            response.setStatus(409);
+            return "Errore: l'id selezionato non esiste";
+        }
+        return "L'utente paziente è stato attivato";
+    }
+
+
 }

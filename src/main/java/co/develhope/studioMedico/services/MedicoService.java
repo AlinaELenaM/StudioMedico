@@ -1,11 +1,13 @@
 package co.develhope.studioMedico.services;
 
 import co.develhope.studioMedico.entites.MedicoEntity;
+import co.develhope.studioMedico.entites.PazienteEntity;
 import co.develhope.studioMedico.enums.StatusEnumeration;
 import co.develhope.studioMedico.repositories.MedicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -22,7 +24,8 @@ public class MedicoService {
 
     public MedicoEntity readOne(Long id) throws Exception {
         MedicoEntity medicoEntity = medicoRepository.getById(id);
-        if (medicoEntity.getStatus() == StatusEnumeration.D) throw new Exception("Errore: l'utente medico è disattivo!");
+        if(medicoEntity.getStatus() == StatusEnumeration.D) throw new Exception("Errore: l'utente medico è disattivo!");
+        if(!medicoRepository.existsById(id)) throw new EntityNotFoundException("Medico non trovato");
         return medicoEntity;
     }
 
@@ -30,9 +33,34 @@ public class MedicoService {
        return medicoRepository.findByStatus(StatusEnumeration.A);
     }
 
-    public MedicoEntity modificaMedico(Long id , MedicoEntity medicoEntity){
-        medicoEntity.setId(id);
-        return medicoRepository.saveAndFlush(medicoEntity);
+    public MedicoEntity modficaMedico(MedicoEntity medicoEntity, Long id) {
+        if(!medicoRepository.existsById(id)) {
+            throw new EntityNotFoundException("Il Medico non esiste");
+        }
+        MedicoEntity medico = medicoRepository.findById(id).get();
+
+        if(medicoEntity.getNome() != null) {
+            medico.setNome(medicoEntity.getNome());
+        }
+        if(medicoEntity.getCognome() != null) {
+            medico.setCognome(medicoEntity.getCognome());
+        }
+        if(medicoEntity.getEmail() != null) {
+            medico.setEmail(medicoEntity.getEmail());
+        }
+        if(medicoEntity.getNumeroTelefonico() != null) {
+            medico.setNumeroTelefonico(medicoEntity.getNumeroTelefonico());
+        }
+        if(medicoEntity.getGiorniLavorativi() != null) {
+            medico.setGiorniLavorativi(medicoEntity.getGiorniLavorativi());
+        }
+        if(medicoEntity.getSedeDiLavoro() != null) {
+            medico.setSedeDiLavoro(medicoEntity.getSedeDiLavoro());
+        }
+        if(medicoEntity.getSpecializzazione() != null) {
+            medico.setSpecializzazione(medicoEntity.getSpecializzazione());
+        }
+        return medicoRepository.saveAndFlush(medico);
     }
 
     public String cancellaMedico(Long id , HttpServletResponse response){
