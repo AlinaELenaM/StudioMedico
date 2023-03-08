@@ -1,55 +1,61 @@
 package co.develhope.studioMedico.controllers;
-import co.develhope.studioMedico.entites.Paziente;
-import co.develhope.studioMedico.repositories.PazienteRepository;
+import co.develhope.studioMedico.entites.PazienteEntity;
+import co.develhope.studioMedico.services.PazienteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/paziente")
 public class PazienteController {
 
     @Autowired
-    private PazienteRepository pazienteRepository;
+    private PazienteService pazienteService;
 
     @PostMapping("/create")
-    public Paziente createPaziente(@RequestBody Paziente paziente){
-        return pazienteRepository.saveAndFlush(paziente);
+    public ResponseEntity<String> createPaziente(@RequestBody PazienteEntity paziente){
+        pazienteService.createPaziente(paziente);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Paziente creato correttamente");
     }
 
-    @GetMapping("/read_all")
-    public List<Paziente> getAll(){
-        return (List<Paziente>) pazienteRepository.findAll();
+    /**
+     * Restituisce la lista dei pazienti.
+     *
+     * @return la list
+     */
+    @GetMapping({"/getAll"})
+    public List<PazienteEntity> getPazienti(){
+
+        return pazienteService.getPazienti();
     }
 
-    @GetMapping("/read_one/{id}")
-    public Paziente getOne(@PathVariable long id){
-        return pazienteRepository.existsById(id) ? pazienteRepository.getById(id) : new Paziente();
+    /**
+     * Restituisce il paziente tramite id.
+     *
+     * @param id  id
+     * @return il paziente tramite id
+     */
+    @GetMapping("/{id}")
+    public PazienteEntity getPazienteById(@PathVariable Long id) {
+        return pazienteService.getPazienteById(id);
     }
 
-    @PutMapping("/update/{id}")
-    public Paziente pazienteUpdate(@PathVariable long id , @RequestBody Paziente paziente){
-        paziente.setId(id);
-        return pazienteRepository.saveAndFlush(paziente);
+    /**
+     * Update del paziente tramite id, restituisce una response entity di status 200.
+     *
+     * @param pazienteEdit la modifica al paziente
+     * @param id            id
+     * @return la response entity di status 200 la richiesta del client al server è stata completata con successo.
+     */
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<String> updatePazienteById(@RequestBody PazienteEntity pazienteEdit, @PathVariable Long id) {
+        pazienteService.updatePazienteById(pazienteEdit, id);
+        return ResponseEntity.status(200).body("Paziente modificato correttamente");
     }
-
-
-    @DeleteMapping("/delete_one/{id}")
-    public void deleteOne(@PathVariable long id , HttpServletResponse response){
-        if(pazienteRepository.existsById(id)){
-            pazienteRepository.deleteById(id);
-        }
-        else
-            response.setStatus(409);
-    }
-
-
-    @DeleteMapping("/delete_all")
-    public void deleteAll(){
-        pazienteRepository.deleteAll();
-    }
-
+    //TODO soft delete (cancellazione logica)
 
 }

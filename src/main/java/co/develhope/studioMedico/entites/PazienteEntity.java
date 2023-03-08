@@ -1,12 +1,11 @@
 package co.develhope.studioMedico.entites;
-import co.develhope.studioMedico.enums.StatusEnumeration;
 
 import javax.persistence.*;
 import java.sql.Date;
 
 @Table
 @Entity
-public class Paziente extends Persona {
+public class PazienteEntity extends Persona {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_paziente", nullable = false)
@@ -20,10 +19,10 @@ public class Paziente extends Persona {
     @Column(name = "storico_malattie", nullable = false)
     private String storicoMalattie;
 
-    public Paziente() {
+    public PazienteEntity() {
     }
 
-    public Paziente(String nome, String cognome, String email, String numeroTelefonico, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate, Long id, String codiceFiscale, String indirizzo, String allergie, String storicoMalattie) {
+    public PazienteEntity(String nome, String cognome, String email, String numeroTelefonico, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate, Long id, String codiceFiscale, String indirizzo, String allergie, String storicoMalattie) {
         super(nome, cognome, email, numeroTelefonico, createdBy, creationDate, lastModifiedBy, lastModifiedDate);
         this.id = id;
         this.codiceFiscale = codiceFiscale;
