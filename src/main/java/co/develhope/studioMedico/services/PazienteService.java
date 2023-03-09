@@ -36,6 +36,8 @@ public class PazienteService {
      * @return the paziente by id
      */
     public PazienteEntity getPazienteById(Long id) throws Exception {
+        if (pazienteRepository.getReferenceById(id) == null){
+            throw new Exception("Questo paziente non esiste nel database");}
         PazienteEntity pazienteEntity = pazienteRepository.getById(id);
         if(pazienteEntity.getStatus() == StatusEnumeration.D) throw new Exception("Errore: l'utente paziente è disattivo!");
         if(!pazienteRepository.existsById(id)) throw new EntityNotFoundException("Paziente non trovato");

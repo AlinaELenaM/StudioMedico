@@ -23,6 +23,8 @@ public class MedicoService {
     }
 
     public MedicoEntity readOne(Long id) throws Exception {
+        if (medicoRepository.getReferenceById(id) == null){
+            throw new Exception("Questo medico non esiste nel database");}
         MedicoEntity medicoEntity = medicoRepository.getById(id);
         if(medicoEntity.getStatus() == StatusEnumeration.D) throw new Exception("Errore: l'utente medico è disattivo!");
         if(!medicoRepository.existsById(id)) throw new EntityNotFoundException("Medico non trovato");
