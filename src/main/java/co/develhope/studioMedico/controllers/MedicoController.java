@@ -1,9 +1,12 @@
 package co.develhope.studioMedico.controllers;
 
+import co.develhope.studioMedico.entites.AppuntamentoEntity;
 import co.develhope.studioMedico.entites.MedicoEntity;
 import co.develhope.studioMedico.entites.PazienteEntity;
 import co.develhope.studioMedico.repositories.MedicoRepository;
+import co.develhope.studioMedico.services.AppuntamentoService;
 import co.develhope.studioMedico.services.MedicoService;
+import co.develhope.studioMedico.services.PazienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,41 +22,35 @@ public class MedicoController {
     @Autowired
     private MedicoService medicoService;
     @Autowired
-    private MedicoRepository medicoRepository;
-
-    //TODO : manca visualizzaSchedaPaziente, visualizzaAppuntamenti, cancellaAppuntamento
-
-
-    @PostMapping("/crea")
-    public ResponseEntity<String> crea(@RequestBody MedicoEntity medicoEntity){
-        medicoService.creaMedico(medicoEntity);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Medico creato correttamente");
-    }
-
-    @GetMapping("/{id}")
-    public MedicoEntity singoloMedico(@PathVariable Long id) throws Exception {
-        return medicoService.readOne(id);
-    }
+    private PazienteService pazienteService;
+    @Autowired
+    private AppuntamentoService appuntamentoService;
 
     @GetMapping("/lista_medici")
     public List<MedicoEntity> listaMedici(){
         return medicoService.readAll();
     }
 
-    @PutMapping("/modifica_medico/{id}")
-    public ResponseEntity<String> modificaMedico(@RequestBody MedicoEntity medico, @PathVariable Long id) {
-        medicoService.modficaMedico(medico, id);
-        return ResponseEntity.status(200).body("Medico modificato correttamente");
+
+    /**
+     * Restituisce il paziente tramite id.
+     *
+     * @param id  id
+     * @return il paziente tramite id
+     */
+    @GetMapping("/leggi_paziente/{id}")
+    public PazienteEntity leggiPaziente(@PathVariable Long id) throws Exception {
+        return pazienteService.getPazienteById(id);
     }
 
-    @DeleteMapping("/elimina_medico/{id}")
-    public String cancella(@PathVariable Long id , HttpServletResponse response){
-        return medicoService.cancellaMedico(id , response);
+    @GetMapping("leggi_appuntamento/{id}")
+    public AppuntamentoEntity singoloApppuntamento(@PathVariable Long id) throws Exception {
+        return appuntamentoService.readOne(id);
     }
 
-    @PutMapping("/riattiva_medico/{id}")
-    public String riattiva(@PathVariable Long id , HttpServletResponse response){
-        return medicoService.riattivaMedico(id , response);
+    @DeleteMapping("/elimina_appuntamento/{id}")
+    public String cancellaAppuntamentoById(@PathVariable Long id , HttpServletResponse response){
+        return appuntamentoService.cancellaAppuntaemnto(id , response);
     }
 
 }

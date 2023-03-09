@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @MappedSuperclass
-public abstract class Persona {
+public abstract class PersonaEntity {
     @Column(name = "nome", nullable = false)
     private String nome;
     @Column(name = "cognome", nullable = false)
@@ -31,10 +31,10 @@ public abstract class Persona {
     @Column(name = "active", nullable = false)
     private StatusEnumeration status;
 
-    public Persona() {
+    public PersonaEntity() {
     }
 
-    public Persona(String nome, String cognome, String email, String numeroTelefonico, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate) {
+    public PersonaEntity(String nome, String cognome, String email, String numeroTelefonico, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate) {
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;

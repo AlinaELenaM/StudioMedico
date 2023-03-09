@@ -7,6 +7,7 @@ import co.develhope.studioMedico.repositories.SegretarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -30,9 +31,52 @@ public class SegretarioService {
         return segretarioRepository.findByStatus(StatusEnumeration.A);
     }
 
-    public SegretarioEntity modificaSegretario(Long id , SegretarioEntity medicoEntity){
-        medicoEntity.setId(id);
-        return segretarioRepository.saveAndFlush(medicoEntity);
+    public SegretarioEntity modificaSegretario(SegretarioEntity segretarioEntity, Long id) {
+        if(!segretarioRepository.existsById(id)) {
+            throw new EntityNotFoundException("Il Medico non esiste");
+        }
+        SegretarioEntity segretario = segretarioRepository.findById(id).get();
+
+        if(segretarioEntity.getNome() != null) {
+            segretario.setNome(segretarioEntity.getNome());
+        }
+        if(segretarioEntity.getCognome() != null) {
+            segretario.setCognome(segretarioEntity.getCognome());
+        }
+        if(segretarioEntity.getEmail() != null) {
+            segretario.setEmail(segretarioEntity.getEmail());
+        }
+        if(segretarioEntity.getNumeroTelefonico() != null) {
+            segretario.setNumeroTelefonico(segretarioEntity.getNumeroTelefonico());
+        }
+        if(segretarioEntity.getSedeDiLavoro() != null) {
+            segretario.setSedeDiLavoro(segretarioEntity.getSedeDiLavoro());
+        }
+        return segretarioRepository.saveAndFlush(segretario);
+    }
+
+    public String cancellaSegretario(Long id , HttpServletResponse response){
+        if(segretarioRepository.existsById(id)){
+            SegretarioEntity segretarioEntity = segretarioRepository.getById(id);
+            segretarioEntity.setStatus(StatusEnumeration.D);
+            segretarioRepository.save(segretarioEntity);
+        } else {
+            response.setStatus(409);
+            return "Errore: l'id selezionato non esiste";
+        }
+        return "L'utente segretario è stato disattivato";
+    }
+
+    public String riattivaSegretario(Long id , HttpServletResponse response){
+        if(segretarioRepository.existsById(id)){
+            SegretarioEntity segretarioEntity = segretarioRepository.getById(id);
+            segretarioEntity.setStatus(StatusEnumeration.A);
+            segretarioRepository.save(segretarioEntity);
+        } else {
+            response.setStatus(409);
+            return "Errore: l'id selezionato non esiste";
+        }
+        return "L'utente segretario è stato attivato";
     }
 
 

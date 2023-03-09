@@ -7,7 +7,7 @@ import java.sql.Date;
 
 @Table(name = "medico")
 @Entity
-public class MedicoEntity extends Persona {
+public class MedicoEntity extends PersonaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

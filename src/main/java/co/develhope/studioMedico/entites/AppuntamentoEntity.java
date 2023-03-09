@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Table
 @Entity
-public class Appuntamento {
+public class AppuntamentoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idAppuntamento;
@@ -28,12 +28,11 @@ public class Appuntamento {
     private String lastModifiedBy;
     @Column(name = "last_modified_date")
     private Date lastModifiedDate;
-    //refactor con enumerato active e delete (var 1 - A / D)
-    @Column(name = "attivo" , nullable = false)
-    private StatusEnumeration attivo;
-    public Appuntamento(){}
+    @Column(name = "active", nullable = false)
+    private StatusEnumeration status;
+    public AppuntamentoEntity(){}
 
-    public Appuntamento(Long idAppuntamento, LocalDateTime orarioAppuntamento, StatoAppuntamento statoAppuntamento, String noteAppuntamento, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate, StatusEnumeration attivo) {
+    public AppuntamentoEntity(Long idAppuntamento, LocalDateTime orarioAppuntamento, StatoAppuntamento statoAppuntamento, String noteAppuntamento, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate) {
         this.idAppuntamento = idAppuntamento;
         this.orarioAppuntamento = orarioAppuntamento;
         this.statoAppuntamento = statoAppuntamento;
@@ -42,7 +41,7 @@ public class Appuntamento {
         this.creationDate = creationDate;
         this.lastModifiedBy = lastModifiedBy;
         this.lastModifiedDate = lastModifiedDate;
-        this.attivo = attivo;
+        this.status = StatusEnumeration.A;
     }
 
     public Long getIdAppuntamento() {
@@ -93,10 +92,14 @@ public class Appuntamento {
     public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
-    public StatusEnumeration getAttivo() {
-        return attivo;
+
+    public StatusEnumeration getStatus() {
+        return status;
     }
-    public void setAttivo(StatusEnumeration attivo) {
-        this.attivo = attivo;
+
+    public void setStatus(StatusEnumeration status) {
+        this.status = status;
     }
+
+
 }
