@@ -32,7 +32,6 @@ public class SegretarioController {
     @Autowired
     private AppuntamentoService appuntamentoService;
 
-
     //METODI PER IL MEDICO
 
     @PostMapping("/crea_medico")
@@ -66,7 +65,6 @@ public class SegretarioController {
     public String riattivaMedico(@PathVariable Long id , HttpServletResponse response){
         return medicoService.riattivaMedico(id , response);
     }
-
 
     //METODI PER IL PAZIENTE
 
@@ -120,7 +118,6 @@ public class SegretarioController {
         return pazienteService.riattivaPaziente(id , response);
     }
 
-
     //METODI PER IL SEGRETARIO
 
     @PostMapping("/crea_segretario")
@@ -155,7 +152,6 @@ public class SegretarioController {
         return segretarioService.riattivaSegretario(id , response);
     }
 
-
     //METODI APPUNTAMENTO
 
     @PostMapping("/crea_appuntamento")
@@ -189,6 +185,4 @@ public class SegretarioController {
     public String riattivaAppuntamentooById(@PathVariable Long id , HttpServletResponse response){
         return appuntamentoService.riattivaAppuntamento(id , response);
     }
-
-
 }

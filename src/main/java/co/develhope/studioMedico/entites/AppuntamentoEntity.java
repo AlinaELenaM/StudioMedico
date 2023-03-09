@@ -7,13 +7,14 @@ import javax.persistence.*;
 import java.sql.Date;
 import java.time.LocalDateTime;
 
-@Table
+@Table(name = "appuntamento")
 @Entity
 public class AppuntamentoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idAppuntamento;
     private LocalDateTime orarioAppuntamento;
+    @Enumerated(EnumType.STRING)
     private StatoAppuntamento statoAppuntamento;
     private String noteAppuntamento;
     //updatable flag helps to avoid the override of
@@ -29,7 +30,9 @@ public class AppuntamentoEntity {
     @Column(name = "last_modified_date")
     private Date lastModifiedDate;
     @Column(name = "active", nullable = false)
+    @Enumerated(EnumType.STRING)
     private StatusEnumeration status;
+
     public AppuntamentoEntity(){}
 
     public AppuntamentoEntity(Long idAppuntamento, LocalDateTime orarioAppuntamento, StatoAppuntamento statoAppuntamento, String noteAppuntamento, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate) {

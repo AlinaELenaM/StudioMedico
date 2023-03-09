@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/paziente")
 public class PazienteController {
@@ -37,12 +36,5 @@ public class PazienteController {
     public AppuntamentoEntity singoloApppuntamento(@PathVariable Long id) throws Exception {
         return appuntamentoService.readOne(id);
     }
-
-    //TODO: manca visualizza appuntamento;
-
-
-
-
-
 
 }

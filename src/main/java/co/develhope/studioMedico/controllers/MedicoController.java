@@ -43,6 +43,11 @@ public class MedicoController {
         return pazienteService.getPazienteById(id);
     }
 
+    @GetMapping("leggi_medico/{id}")
+    public MedicoEntity singoloMedico(@PathVariable Long id) throws Exception {
+        return medicoService.readOne(id);
+    }
+
     @GetMapping("leggi_appuntamento/{id}")
     public AppuntamentoEntity singoloApppuntamento(@PathVariable Long id) throws Exception {
         return appuntamentoService.readOne(id);

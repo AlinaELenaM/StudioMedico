@@ -3,7 +3,7 @@ package co.develhope.studioMedico.entites;
 import javax.persistence.*;
 import java.sql.Date;
 
-@Table
+@Table(name = "paziente")
 @Entity
 public class PazienteEntity extends PersonaEntity {
     @Id

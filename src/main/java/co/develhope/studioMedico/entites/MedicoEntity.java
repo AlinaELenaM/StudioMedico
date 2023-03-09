@@ -18,6 +18,7 @@ public class MedicoEntity extends PersonaEntity {
     @Column(name = "sede_di_lavoro" , nullable = false)
     private String sedeDiLavoro;
     @Column(name = "giorni_lavorativi" , nullable = false)
+    @Enumerated(EnumType.STRING)
     private GiorniLavorativiEnum giorniLavorativi;
 
 

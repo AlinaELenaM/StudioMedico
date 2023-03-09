@@ -34,7 +34,7 @@ public class AppuntamentoService {
 
     public AppuntamentoEntity modificaAppuntamento(AppuntamentoEntity appuntamentoEntity, Long id) {
         if(!appuntamentoRepository.existsById(id)) {
-            throw new EntityNotFoundException("Lìappuntamento non esiste");
+            throw new EntityNotFoundException("L'appuntamento non esiste");
         }
         AppuntamentoEntity appuntamento = appuntamentoRepository.findById(id).get();
 

@@ -29,6 +29,7 @@ public abstract class PersonaEntity {
     @Column(name = "last_modified_date")
     private Date lastModifiedDate;
     @Column(name = "active", nullable = false)
+    @Enumerated(EnumType.STRING)
     private StatusEnumeration status;
 
     public PersonaEntity() {

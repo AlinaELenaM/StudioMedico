@@ -28,7 +28,7 @@ public class PazienteService {
         paziente.setStatus(StatusEnumeration.A);
         return pazienteRepository.saveAndFlush(paziente);
     }
-
+//TODO gestione eccezione
     /**
      * Metodo che restituisce il paziente tramite id.
      *
@@ -118,6 +118,4 @@ public class PazienteService {
         }
         return "L'utente paziente è stato attivato";
     }
-
-
 }
