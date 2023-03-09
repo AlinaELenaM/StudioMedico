@@ -22,6 +22,8 @@ public class SegretarioService {
     }
 
     public SegretarioEntity readOne(Long id) throws Exception {
+        if (segretarioRepository.getReferenceById(id) == null){
+            throw new Exception("Questo segretario non esiste nel database");}
         SegretarioEntity segretarioEntity = segretarioRepository.getById(id);
         if (segretarioEntity.getStatus() == StatusEnumeration.D) throw new Exception("Errore: l'utente segretario è disattivo!");
         return segretarioEntity;

@@ -22,6 +22,8 @@ public class AppuntamentoService {
     }
 
     public AppuntamentoEntity readOne(Long id) throws Exception {
+        if (appuntamentoRepository.getReferenceById(id) == null){
+            throw new Exception("Questo appuntamento non esiste nel database");}
         AppuntamentoEntity appuntamentoEntity = appuntamentoRepository.getById(id);
         if(appuntamentoEntity.getStatus() == StatusEnumeration.D) throw new Exception("Errore: l'appuntamento è disattivo!");
         if(!appuntamentoRepository.existsById(id)) throw new EntityNotFoundException("Appuntamento non trovato");
