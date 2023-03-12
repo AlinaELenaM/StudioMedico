@@ -1,10 +1,10 @@
 package co.develhope.studioMedico.services;
-import co.develhope.studioMedico.entites.MedicoEntity;
+
 import co.develhope.studioMedico.entites.PazienteEntity;
 import co.develhope.studioMedico.enums.StatusEnumeration;
 import co.develhope.studioMedico.repositories.PazienteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -16,41 +16,47 @@ import java.util.List;
  */
 @Service
 public class PazienteService {
+    private final PazienteRepository pazienteRepository;
 
-    @Autowired
-    private PazienteRepository pazienteRepository;
+    public PazienteService(PazienteRepository pazienteRepository) {
+        this.pazienteRepository = pazienteRepository;
+    }
+
 
     /**
      * Metodo che crea il paziente.
+     *
      * @param paziente il paziente
      */
-    public PazienteEntity createPaziente(PazienteEntity paziente){
-        paziente.setStatus(StatusEnumeration.A);
-        return pazienteRepository.saveAndFlush(paziente);
+    public PazienteEntity creaPaziente(PazienteEntity paziente) {
+        return pazienteRepository.save(paziente);
     }
-//TODO gestione eccezione
+
     /**
      * Metodo che restituisce il paziente tramite id.
      *
      * @param id the id
      * @return the paziente by id
      */
-    public PazienteEntity getPazienteById(Long id) throws Exception {
-        if (pazienteRepository.getReferenceById(id) == null){
-            throw new Exception("Questo paziente non esiste nel database");}
-        PazienteEntity pazienteEntity = pazienteRepository.getById(id);
-        if(pazienteEntity.getStatus() == StatusEnumeration.D) throw new Exception("Errore: l'utente paziente è disattivo!");
-        if(!pazienteRepository.existsById(id)) throw new EntityNotFoundException("Paziente non trovato");
+    public PazienteEntity visualizzaPaziente(Long id) throws Exception {
+        if (pazienteRepository.findById(id) == null) {
+            throw new Exception("Questo paziente non esiste nel database");
+        }
+        PazienteEntity pazienteEntity = pazienteRepository.findById(id).get();
+        if (pazienteEntity.getStato() == StatusEnumeration.D)
+            throw new Exception("Errore: l'utente paziente è disattivo!");
+        if (!pazienteRepository.existsById(id)) throw new EntityNotFoundException("Paziente non trovato");
         return pazienteEntity;
     }
 
 
     /**
      * Metodo che restituisce tutti i pazienti.
+     *
      * @return i pazienti
      */
-    public List<PazienteEntity> tuttiPazienti(){
-        return pazienteRepository.findByStatus(StatusEnumeration.A);
+    public List<PazienteEntity> visualizzaListaPazienti() {
+        return pazienteRepository.findByStato(StatusEnumeration.A);
     }
 
 
@@ -65,42 +71,42 @@ public class PazienteService {
      * Infine, il metodo restituisce l'entità "paziente" aggiornata
      */
     public PazienteEntity modificaPaziente(PazienteEntity pazienteEdit, Long id) {
-        if(!pazienteRepository.existsById(id)) {
+        if (!pazienteRepository.existsById(id)) {
             throw new EntityNotFoundException("Il paziente non esiste");
         }
         PazienteEntity paziente = pazienteRepository.findById(id).get();
 
-        if(pazienteEdit.getNome() != null) {
+        if (pazienteEdit.getNome() != null) {
             paziente.setNome(pazienteEdit.getNome());
         }
-        if(pazienteEdit.getCognome() != null) {
+        if (pazienteEdit.getCognome() != null) {
             paziente.setCognome(pazienteEdit.getCognome());
         }
-        if(pazienteEdit.getEmail() != null) {
+        if (pazienteEdit.getEmail() != null) {
             paziente.setEmail(pazienteEdit.getEmail());
         }
-        if(pazienteEdit.getNumeroTelefonico() != null) {
-            paziente.setNumeroTelefonico(pazienteEdit.getNumeroTelefonico());
+        if (pazienteEdit.getContattoTelefonico() != null) {
+            paziente.setContattoTelefonico(pazienteEdit.getContattoTelefonico());
         }
-        if(pazienteEdit.getCodiceFiscale() != null) {
+        if (pazienteEdit.getCodiceFiscale() != null) {
             paziente.setCodiceFiscale(pazienteEdit.getCodiceFiscale());
         }
-        if(pazienteEdit.getIndirizzo() != null) {
+        if (pazienteEdit.getIndirizzo() != null) {
             paziente.setIndirizzo(pazienteEdit.getIndirizzo());
         }
-        if(pazienteEdit.getAllergie() != null) {
+        if (pazienteEdit.getAllergie() != null) {
             paziente.setAllergie(pazienteEdit.getAllergie());
         }
-        if(pazienteEdit.getStoricoMalattie() != null) {
+        if (pazienteEdit.getStoricoMalattie() != null) {
             paziente.setStoricoMalattie(pazienteEdit.getStoricoMalattie());
         }
-        return pazienteRepository.saveAndFlush(paziente);
+        return pazienteRepository.save(paziente);
     }
 
-    public String cancellaPaziente(Long id , HttpServletResponse response){
-        if(pazienteRepository.existsById(id)){
-            PazienteEntity pazienteEntity = pazienteRepository.getById(id);
-            pazienteEntity.setStatus(StatusEnumeration.D);
+    public String cancellaPaziente(Long id, HttpServletResponse response) {
+        if (pazienteRepository.existsById(id)) {
+            PazienteEntity pazienteEntity = pazienteRepository.findById(id).get();
+            pazienteEntity.setStato(StatusEnumeration.D);
             pazienteRepository.save(pazienteEntity);
         } else {
             response.setStatus(409);
@@ -109,10 +115,10 @@ public class PazienteService {
         return "L'utente paziente è stato disattivato";
     }
 
-    public String riattivaPaziente(Long id , HttpServletResponse response){
-        if(pazienteRepository.existsById(id)){
-            PazienteEntity pazienteEntity = pazienteRepository.getById(id);
-            pazienteEntity.setStatus(StatusEnumeration.A);
+    public String riattivaPaziente(Long id, HttpServletResponse response) {
+        if (pazienteRepository.existsById(id)) {
+            PazienteEntity pazienteEntity = pazienteRepository.findById(id).get();
+            pazienteEntity.setStato(StatusEnumeration.A);
             pazienteRepository.save(pazienteEntity);
         } else {
             response.setStatus(409);

@@ -3,7 +3,10 @@ package co.develhope.studioMedico.entites;
 
 import co.develhope.studioMedico.enums.StatusEnumeration;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.MappedSuperclass;
 import java.sql.Date;
 
 @MappedSuperclass
@@ -12,40 +15,36 @@ public abstract class PersonaEntity {
     private String nome;
     @Column(name = "cognome", nullable = false)
     private String cognome;
-    @Column(name = "email", nullable = false , unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
     @Column(name = "contatto_telefonico", nullable = false, unique = true)
-    private String numeroTelefonico;
-    //updatable flag helps to avoid the override of
-    //column's value during the update operation
-    @Column(name = "created_by", updatable = false)
-    private String createdBy;
-    //updatable flag helps to avoid the override of
-    //column's value during the update operation
-    @Column(name = "created_date", updatable = false)
-    private Date creationDate;
-    @Column(name = "last_modified_by")
-    private String lastModifiedBy;
-    @Column(name = "last_modified_date")
-    private Date lastModifiedDate;
-    @Column(name = "active", nullable = false)
+    private String contattoTelefonico;
+
+    @Column(name = "creato_Da", updatable = false)
+    private String creatoDa;
+    @Column(name = "data_creazione", updatable = false)
+    private Date dataCreazione = new Date(System.currentTimeMillis());
+    @Column(name = "ultima_modifica_da")
+    private String ultimaModificaDa;
+    @Column(name = "data_ultima_modifica")
+    private Date dataUltimaModifica;
+    @Column(name = "stato", nullable = false)
     @Enumerated(EnumType.STRING)
-    private StatusEnumeration status;
+    private StatusEnumeration stato = StatusEnumeration.A;
 
     public PersonaEntity() {
     }
 
-    public PersonaEntity(String nome, String cognome, String email, String numeroTelefonico, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate) {
+    public PersonaEntity(String nome, String cognome, String email, String contattoTelefonico, String creatoDa, Date dataCreazione, String ultimaModificaDa, Date dataUltimaModifica, StatusEnumeration stato) {
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
-        this.numeroTelefonico = numeroTelefonico;
-        this.createdBy = createdBy;
-        this.creationDate = creationDate;
-        this.lastModifiedBy = lastModifiedBy;
-        this.lastModifiedDate = lastModifiedDate;
-        this.status = StatusEnumeration.A;
-
+        this.contattoTelefonico = contattoTelefonico;
+        this.creatoDa = creatoDa;
+        this.dataCreazione = dataCreazione;
+        this.ultimaModificaDa = ultimaModificaDa;
+        this.dataUltimaModifica = dataUltimaModifica;
+        this.stato = stato;
     }
 
     public String getNome() {
@@ -72,51 +71,51 @@ public abstract class PersonaEntity {
         this.email = email;
     }
 
-    public String getNumeroTelefonico() {
-        return numeroTelefonico;
+    public String getContattoTelefonico() {
+        return contattoTelefonico;
     }
 
-    public void setNumeroTelefonico(String numeroTelefonico) {
-        this.numeroTelefonico = numeroTelefonico;
+    public void setContattoTelefonico(String contattoTelefonico) {
+        this.contattoTelefonico = contattoTelefonico;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
+    public String getCreatoDa() {
+        return creatoDa;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
+    public void setCreatoDa(String creatoDa) {
+        this.creatoDa = creatoDa;
     }
 
-    public Date getCreationDate() {
-        return creationDate;
+    public Date getDataCreazione() {
+        return dataCreazione;
     }
 
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+    public void setDataCreazione(Date dataCreazione) {
+        this.dataCreazione = dataCreazione;
     }
 
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
+    public String getUltimaModificaDa() {
+        return ultimaModificaDa;
     }
 
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
+    public void setUltimaModificaDa(String ultimaModificaDa) {
+        this.ultimaModificaDa = ultimaModificaDa;
     }
 
-    public Date getLastModifiedDate() {
-        return lastModifiedDate;
+    public Date getDataUltimaModifica() {
+        return dataUltimaModifica;
     }
 
-    public void setLastModifiedDate(Date lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
+    public void setDataUltimaModifica(Date dataUltimaModifica) {
+        this.dataUltimaModifica = dataUltimaModifica;
     }
 
-    public StatusEnumeration getStatus() {
-        return status;
+    public StatusEnumeration getStato() {
+        return stato;
     }
 
-    public void setStatus(StatusEnumeration status) {
-        this.status = status;
+    public void setStato(StatusEnumeration stato) {
+        this.stato = stato;
     }
 }

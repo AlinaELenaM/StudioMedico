@@ -3,82 +3,64 @@ package co.develhope.studioMedico.services;
 import co.develhope.studioMedico.entites.AppuntamentoEntity;
 import co.develhope.studioMedico.enums.StatusEnumeration;
 import co.develhope.studioMedico.repositories.AppuntamentoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AppuntamentoService {
+    private final AppuntamentoRepository appuntamentoRepository;
 
-    @Autowired
-    private AppuntamentoRepository appuntamentoRepository;
-
-    public AppuntamentoEntity creaAppuntamento(AppuntamentoEntity appuntamentoEntity){
-        appuntamentoEntity.setStatus(StatusEnumeration.A);
-        return appuntamentoRepository.saveAndFlush(appuntamentoEntity);
+    public AppuntamentoService(AppuntamentoRepository appuntamentoRepository) {
+        this.appuntamentoRepository = appuntamentoRepository;
     }
 
-    public AppuntamentoEntity readOne(Long id) throws Exception {
-        if (appuntamentoRepository.getReferenceById(id) == null){
-            throw new Exception("Questo appuntamento non esiste nel database");}
-        AppuntamentoEntity appuntamentoEntity = appuntamentoRepository.getById(id);
-        if(appuntamentoEntity.getStatus() == StatusEnumeration.D) throw new Exception("Errore: l'appuntamento è disattivo!");
-        if(!appuntamentoRepository.existsById(id)) throw new EntityNotFoundException("Appuntamento non trovato");
-        return appuntamentoEntity;
+
+    public AppuntamentoEntity creaAppuntamento(AppuntamentoEntity appuntamentoEntity) {
+        return appuntamentoRepository.save(appuntamentoEntity);
     }
 
-    public List<AppuntamentoEntity> readAll(){
-        return appuntamentoRepository.findByStatus(StatusEnumeration.A);
+    public ResponseEntity<AppuntamentoEntity> cercaAppuntamentoPerId(Long id) throws RuntimeException {
+        Optional<AppuntamentoEntity> appuntamentoOptional = appuntamentoRepository.findByIdAppuntamentoAndStato(id, StatusEnumeration.A);
+        return appuntamentoOptional.map(appuntamentoEntity -> new ResponseEntity<>(appuntamentoEntity, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    public AppuntamentoEntity modificaAppuntamento(AppuntamentoEntity appuntamentoEntity, Long id) {
-        if(!appuntamentoRepository.existsById(id)) {
-            throw new EntityNotFoundException("L'appuntamento non esiste");
-        }
-        AppuntamentoEntity appuntamento = appuntamentoRepository.findById(id).get();
+    public List<AppuntamentoEntity> cercaTuttiAppuntamenti() {
+        return appuntamentoRepository.findByStato(StatusEnumeration.A);
+    }
 
-        if(appuntamentoEntity.getOrarioAppuntamento() != null) {
+    public ResponseEntity<AppuntamentoEntity> modificaAppuntamento(AppuntamentoEntity appuntamentoEntity, Long id) {
+        Optional<AppuntamentoEntity> optionalAppuntamento = appuntamentoRepository.findByIdAppuntamentoAndStato(id, StatusEnumeration.A);
+
+        return optionalAppuntamento.map(appuntamento -> {
             appuntamento.setOrarioAppuntamento(appuntamentoEntity.getOrarioAppuntamento());
-        }
-        if(appuntamentoEntity.getNoteAppuntamento() != null) {
             appuntamento.setNoteAppuntamento(appuntamentoEntity.getNoteAppuntamento());
-        }
-        if(appuntamentoEntity.getStatus() != null) {
-            appuntamento.setStatus(appuntamentoEntity.getStatus());
-        }
-        if(appuntamentoEntity.getStatoAppuntamento() != null) {
+            appuntamento.setStato(appuntamentoEntity.getStato());
             appuntamento.setStatoAppuntamento(appuntamentoEntity.getStatoAppuntamento());
-        }
-        return appuntamentoRepository.saveAndFlush(appuntamento);
+            appuntamentoRepository.save(appuntamento);
+            return new ResponseEntity<>(appuntamento, HttpStatus.OK);
+        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    public String cancellaAppuntaemnto(Long id , HttpServletResponse response){
-        if(appuntamentoRepository.existsById(id)){
-            AppuntamentoEntity appuntamentoEntity = appuntamentoRepository.getById(id);
-            appuntamentoEntity.setStatus(StatusEnumeration.D);
-            appuntamentoRepository.save(appuntamentoEntity);
-        } else {
-            response.setStatus(409);
-            return "Errore: l'id selezionato non esiste";
-        }
-        return "L'appuntamento è stato disattivato";
+    public ResponseEntity<String> cancellaAppuntamento(Long id) {
+        Optional<AppuntamentoEntity> optionalAppuntamento = appuntamentoRepository.findByIdAppuntamentoAndStato(id, StatusEnumeration.A);
+        return optionalAppuntamento.map(appuntamento -> {
+            appuntamento.setStato(StatusEnumeration.D);
+            appuntamentoRepository.save(appuntamento);
+            return new ResponseEntity<>("L'appuntamento è stato disattivato", HttpStatus.OK);
+        }).orElse(new ResponseEntity<>("Errore: l'id selezionato non esiste", HttpStatus.NOT_FOUND));
     }
 
-    public String riattivaAppuntamento(Long id , HttpServletResponse response){
-        if(appuntamentoRepository.existsById(id)){
-            AppuntamentoEntity appuntamentoEntity = appuntamentoRepository.getById(id);
-            appuntamentoEntity.setStatus(StatusEnumeration.A);
-            appuntamentoRepository.save(appuntamentoEntity);
-        } else {
-            response.setStatus(409);
-            return "Errore: l'id selezionato non esiste";
-        }
-        return "L'appuntamento è stato riattivato";
+    public ResponseEntity<String> riattivaAppuntamento(Long id) {
+        Optional<AppuntamentoEntity> optionalAppuntamento = appuntamentoRepository.findByIdAppuntamentoAndStato(id, StatusEnumeration.D);
+        return optionalAppuntamento.map(appuntamento -> {
+            appuntamento.setStato(StatusEnumeration.A);
+            appuntamentoRepository.save(appuntamento);
+            return new ResponseEntity<>("L'appuntamento è stato attivato", HttpStatus.OK);
+        }).orElse(new ResponseEntity<>("Errore: l'id selezionato non esiste", HttpStatus.NOT_FOUND));
     }
-
-
-
 }

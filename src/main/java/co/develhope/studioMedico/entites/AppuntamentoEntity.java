@@ -1,108 +1,157 @@
 package co.develhope.studioMedico.entites;
 
+import co.develhope.studioMedico.enums.StatoAppuntamentoEnum;
 import co.develhope.studioMedico.enums.StatusEnumeration;
-import co.develhope.studioMedico.enums.StatoAppuntamento;
+import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 import java.sql.Date;
 import java.time.LocalDateTime;
 
-@Table(name = "appuntamento")
 @Entity
+@Table(name = "appuntamento")
 public class AppuntamentoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @NotNull
+    @Column(name = "id_appuntamento", nullable = false)
     private Long idAppuntamento;
+    @NotNull
+    @Column(name = "orario_appuntamento", nullable = false)
     private LocalDateTime orarioAppuntamento;
     @Enumerated(EnumType.STRING)
-    private StatoAppuntamento statoAppuntamento;
+    private StatoAppuntamentoEnum statoAppuntamento;
+    @Column(name = "note")
     private String noteAppuntamento;
-    //updatable flag helps to avoid the override of
-    //column's value during the update operation
-    @Column(name = "created_by", updatable = false)
-    private String createdBy;
-    //updatable flag helps to avoid the override of
-    //column's value during the update operation
-    @Column(name = "created_date", updatable = false)
-    private Date creationDate;
-    @Column(name = "last_modified_by")
-    private String lastModifiedBy;
-    @Column(name = "last_modified_date")
-    private Date lastModifiedDate;
-    @Column(name = "active", nullable = false)
+
+    @Column(name = "creato_Da", updatable = false)
+    private String creatoDa;
+    @Column(name = "data_creazione", updatable = false)
+    private Date dataCreazione = new Date(System.currentTimeMillis());
+    @Column(name = "ultima_modifica_da")
+    private String ultimaModificaDa;
+    @Column(name = "data_ultima_modifica")
+    private Date dataUltimaModifica;
+    @NotNull
+    @Column(name = "stato", nullable = false)
     @Enumerated(EnumType.STRING)
-    private StatusEnumeration status;
+    private StatusEnumeration stato = StatusEnumeration.A;
 
-    public AppuntamentoEntity(){}
+    @ManyToOne
+    @JoinColumn(name = "id_paziente", nullable = false)
+    @NotNull
+    private PazienteEntity paziente;
 
-    public AppuntamentoEntity(Long idAppuntamento, LocalDateTime orarioAppuntamento, StatoAppuntamento statoAppuntamento, String noteAppuntamento, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate) {
+    @ManyToOne
+    @JoinColumn(name = "id_medico", nullable = false)
+    @NotNull
+    private MedicoEntity medico;
+
+    public AppuntamentoEntity() {
+    }
+
+    public AppuntamentoEntity(Long idAppuntamento, LocalDateTime orarioAppuntamento,
+                              StatoAppuntamentoEnum statoAppuntamento, String noteAppuntamento, String creatoDa,
+                              Date dataCreazione, String ultimaModificaDa, Date dataUltimaModifica,
+                              StatusEnumeration stato, PazienteEntity paziente, MedicoEntity medico) {
         this.idAppuntamento = idAppuntamento;
         this.orarioAppuntamento = orarioAppuntamento;
         this.statoAppuntamento = statoAppuntamento;
         this.noteAppuntamento = noteAppuntamento;
-        this.createdBy = createdBy;
-        this.creationDate = creationDate;
-        this.lastModifiedBy = lastModifiedBy;
-        this.lastModifiedDate = lastModifiedDate;
-        this.status = StatusEnumeration.A;
+        this.creatoDa = creatoDa;
+        this.dataCreazione = dataCreazione;
+        this.ultimaModificaDa = ultimaModificaDa;
+        this.dataUltimaModifica = dataUltimaModifica;
+        this.stato = stato;
+        this.paziente = paziente;
+        this.medico = medico;
     }
 
     public Long getIdAppuntamento() {
         return idAppuntamento;
     }
-    public void setIdAppuntamento(Long appuntamentoId) {
-        this.idAppuntamento = appuntamentoId;
+
+    public void setIdAppuntamento(Long idAppuntamento) {
+        this.idAppuntamento = idAppuntamento;
     }
+
     public LocalDateTime getOrarioAppuntamento() {
         return orarioAppuntamento;
     }
+
     public void setOrarioAppuntamento(LocalDateTime orarioAppuntamento) {
         this.orarioAppuntamento = orarioAppuntamento;
     }
-    public StatoAppuntamento getStatoAppuntamento() {
+
+    public StatoAppuntamentoEnum getStatoAppuntamento() {
         return statoAppuntamento;
     }
-    public void setStatoAppuntamento(StatoAppuntamento statoAppuntamento) {
+
+    public void setStatoAppuntamento(StatoAppuntamentoEnum statoAppuntamento) {
         this.statoAppuntamento = statoAppuntamento;
     }
+
     public String getNoteAppuntamento() {
         return noteAppuntamento;
     }
+
     public void setNoteAppuntamento(String noteAppuntamento) {
         this.noteAppuntamento = noteAppuntamento;
     }
-    public String getCreatedBy() {
-        return createdBy;
-    }
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-    public Date getCreationDate() {
-        return creationDate;
-    }
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-    public Date getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-    public void setLastModifiedDate(Date lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
+
+    public String getCreatoDa() {
+        return creatoDa;
     }
 
-    public StatusEnumeration getStatus() {
-        return status;
+    public void setCreatoDa(String creatoDa) {
+        this.creatoDa = creatoDa;
     }
 
-    public void setStatus(StatusEnumeration status) {
-        this.status = status;
+    public Date getDataCreazione() {
+        return dataCreazione;
     }
 
+    public void setDataCreazione(Date dataCreazione) {
+        this.dataCreazione = dataCreazione;
+    }
 
+    public String getUltimaModificaDa() {
+        return ultimaModificaDa;
+    }
+
+    public void setUltimaModificaDa(String ultimaModificaDa) {
+        this.ultimaModificaDa = ultimaModificaDa;
+    }
+
+    public Date getDataUltimaModifica() {
+        return dataUltimaModifica;
+    }
+
+    public void setDataUltimaModifica(Date dataUltimaModifica) {
+        this.dataUltimaModifica = dataUltimaModifica;
+    }
+
+    public StatusEnumeration getStato() {
+        return stato;
+    }
+
+    public void setStato(StatusEnumeration stato) {
+        this.stato = stato;
+    }
+
+    public PazienteEntity getPaziente() {
+        return paziente;
+    }
+
+    public void setPaziente(PazienteEntity paziente) {
+        this.paziente = paziente;
+    }
+
+    public MedicoEntity getMedico() {
+        return medico;
+    }
+
+    public void setMedico(MedicoEntity medico) {
+        this.medico = medico;
+    }
 }

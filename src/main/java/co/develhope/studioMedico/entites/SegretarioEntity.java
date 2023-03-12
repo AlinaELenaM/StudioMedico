@@ -1,33 +1,37 @@
 package co.develhope.studioMedico.entites;
 
+import co.develhope.studioMedico.enums.StatusEnumeration;
+
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "segretario")
 public class SegretarioEntity extends PersonaEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_segretario", nullable = false)
     private Long id;
-    @Column(name = "sede_di_lavoro" , nullable = false)
-    private String sedeDiLavoro;
+    @Column(name = "sede_lavoro", nullable = false)
+    private String sedeLavoro;
 
-    public SegretarioEntity(){}
+    @ManyToMany
+    @JoinTable(name = "medico_segretario",
+            joinColumns =
+            @JoinColumn(name = "id_segretario", referencedColumnName = "id_segretario"),
+            inverseJoinColumns =
+            @JoinColumn(name = "id_medico", referencedColumnName = "id_medico"))
+    private List<MedicoEntity> listaMedici;
 
-    public SegretarioEntity(String nome, String cognome, String email, String numeroTelefonico, String createdBy, Date creationDate, String lastModifiedBy, Date lastModifiedDate, Long id, String sedeDiLavoro) {
-        super(nome, cognome, email, numeroTelefonico, createdBy, creationDate, lastModifiedBy, lastModifiedDate);
+    public SegretarioEntity() {
+    }
+
+    public SegretarioEntity(String nome, String cognome, String email, String contattoTelefonico, String creatoDa, Date dataCreazione, String ultimaModificaDa, Date dataUltimaModifica, StatusEnumeration stato, Long id, String sedeLavoro, List<MedicoEntity> listaMedici) {
+        super(nome, cognome, email, contattoTelefonico, creatoDa, dataCreazione, ultimaModificaDa, dataUltimaModifica, stato);
         this.id = id;
-        this.sedeDiLavoro = sedeDiLavoro;
-    }
-
-    public String getSedeDiLavoro() {
-        return sedeDiLavoro;
-    }
-
-    public void setSedeDiLavoro(String sedeDiLavoro) {
-        this.sedeDiLavoro = sedeDiLavoro;
+        this.sedeLavoro = sedeLavoro;
+        this.listaMedici = listaMedici;
     }
 
     public Long getId() {
@@ -38,5 +42,19 @@ public class SegretarioEntity extends PersonaEntity {
         this.id = id;
     }
 
+    public String getSedeLavoro() {
+        return sedeLavoro;
+    }
 
+    public void setSedeLavoro(String sedeLavoro) {
+        this.sedeLavoro = sedeLavoro;
+    }
+
+    public List<MedicoEntity> getListaMedici() {
+        return listaMedici;
+    }
+
+    public void setListaMedici(List<MedicoEntity> listaMedici) {
+        this.listaMedici = listaMedici;
+    }
 }
