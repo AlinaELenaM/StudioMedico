@@ -1,9 +1,6 @@
 package co.develhope.studioMedico.entites;
 
-import co.develhope.studioMedico.enums.StatusEnumeration;
-
 import javax.persistence.*;
-import java.sql.Date;
 import java.util.List;
 
 @Table(name = "paziente")
@@ -14,12 +11,14 @@ public class PazienteEntity extends PersonaEntity {
     @Column(name = "id_paziente", nullable = false)
     private Long id;
     @Column(name = "codice_fiscale", nullable = false)
+
     private String codiceFiscale;
     @Column(name = "indirizzo", nullable = false)
+
     private String indirizzo;
-    @Column(name = "allergie", nullable = false)
+    @Column(name = "allergie")
     private String allergie;
-    @Column(name = "storico_malattie", nullable = false)
+    @Column(name = "storico_malattie")
     private String storicoMalattie;
 
     @OneToMany(mappedBy = "paziente")
@@ -35,18 +34,12 @@ public class PazienteEntity extends PersonaEntity {
     private List<MedicoEntity> listaMedici;
 
 
-    public PazienteEntity() {
-    }
-
-    public PazienteEntity(String nome, String cognome, String email, String contattoTelefonico, String creatoDa, Date dataCreazione, String ultimaModificaDa, Date dataUltimaModifica, StatusEnumeration stato, Long id, String codiceFiscale, String indirizzo, String allergie, String storicoMalattie, List<AppuntamentoEntity> listaAppuntamenti, List<MedicoEntity> listaMedici) {
-        super(nome, cognome, email, contattoTelefonico, creatoDa, dataCreazione, ultimaModificaDa, dataUltimaModifica, stato);
-        this.id = id;
+    public PazienteEntity(String nome, String cognome, String email, String contattoTelefonico, String codiceFiscale, String indirizzo, String allergie, String storicoMalattie, String creatoDa) {
+        super(nome, cognome, email, contattoTelefonico, creatoDa);
         this.codiceFiscale = codiceFiscale;
         this.indirizzo = indirizzo;
         this.allergie = allergie;
         this.storicoMalattie = storicoMalattie;
-        this.listaAppuntamenti = listaAppuntamenti;
-        this.listaMedici = listaMedici;
     }
 
     public Long getId() {

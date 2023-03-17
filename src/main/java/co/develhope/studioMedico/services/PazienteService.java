@@ -1,13 +1,25 @@
 package co.develhope.studioMedico.services;
 
+import co.develhope.studioMedico.dto.request.PazienteRequestDto;
+import co.develhope.studioMedico.dto.response.appuntamento.AppuntamentoMinimalNoPazienteResponseDto;
+import co.develhope.studioMedico.dto.response.medico.MedicoMinimalResponseDto;
+import co.develhope.studioMedico.dto.response.paziente.PazienteMinimalResponseDto;
+import co.develhope.studioMedico.dto.response.paziente.PazienteNoMedicoResponseDto;
+import co.develhope.studioMedico.dto.response.paziente.PazienteResponseDto;
+import co.develhope.studioMedico.entites.MedicoEntity;
 import co.develhope.studioMedico.entites.PazienteEntity;
 import co.develhope.studioMedico.enums.StatusEnumeration;
+import co.develhope.studioMedico.repositories.MedicoRepository;
 import co.develhope.studioMedico.repositories.PazienteRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletResponse;
+import java.sql.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * La classe PazienteService realizza la logica di business relativamente le operazioni di CRUD dei dati di PazienteEntity.
@@ -17,113 +29,163 @@ import java.util.List;
 @Service
 public class PazienteService {
     private final PazienteRepository pazienteRepository;
+    private final MedicoRepository medicoRepository;
 
-    public PazienteService(PazienteRepository pazienteRepository) {
+    public PazienteService(PazienteRepository pazienteRepository, MedicoRepository medicoRepository) {
         this.pazienteRepository = pazienteRepository;
+        this.medicoRepository = medicoRepository;
     }
 
 
-    /**
-     * Metodo che crea il paziente.
-     *
-     * @param paziente il paziente
-     */
-    public PazienteEntity creaPaziente(PazienteEntity paziente) {
-        return pazienteRepository.save(paziente);
-    }
+    public PazienteEntity creaPaziente(PazienteRequestDto pazienteRequestDto) throws RuntimeException {
+        PazienteEntity pazienteEntity = new PazienteEntity(
+                pazienteRequestDto.getNome(),
+                pazienteRequestDto.getCognome(),
+                pazienteRequestDto.getEmail(),
+                pazienteRequestDto.getContattoTelefonico(),
+                pazienteRequestDto.getCodiceFiscale(),
+                pazienteRequestDto.getIndirizzo(),
+                pazienteRequestDto.getAllergie(),
+                pazienteRequestDto.getStoricoMalattie(),
+                "Gruppo 5"
+        );
+        pazienteEntity.setListaMedici(pazienteRequestDto
+                                              .getListaIdMedici().stream()
+                                              .map(medicoId -> medicoRepository.findByIdAndStato(medicoId,
+                                                                                                 StatusEnumeration.A)
+                                                                               .orElseThrow(() -> new RuntimeException(
+                                                                                       "Medico con id " + medicoId + " non presente nel DB")))
+                                              .collect(Collectors.toList()));
 
-    /**
-     * Metodo che restituisce il paziente tramite id.
-     *
-     * @param id the id
-     * @return the paziente by id
-     */
-    public PazienteEntity visualizzaPaziente(Long id) throws Exception {
-        if (pazienteRepository.findById(id) == null) {
-            throw new Exception("Questo paziente non esiste nel database");
-        }
-        PazienteEntity pazienteEntity = pazienteRepository.findById(id).get();
-        if (pazienteEntity.getStato() == StatusEnumeration.D)
-            throw new Exception("Errore: l'utente paziente è disattivo!");
-        if (!pazienteRepository.existsById(id)) throw new EntityNotFoundException("Paziente non trovato");
-        return pazienteEntity;
+        return pazienteRepository.save(pazienteEntity);
     }
 
 
-    /**
-     * Metodo che restituisce tutti i pazienti.
-     *
-     * @return i pazienti
-     */
-    public List<PazienteEntity> visualizzaListaPazienti() {
-        return pazienteRepository.findByStato(StatusEnumeration.A);
+    public ResponseEntity<PazienteResponseDto> ricercaPaziente(Long id) {
+        Optional<PazienteEntity> optionalPaziente = pazienteRepository.findByIdAndStato(id, StatusEnumeration.A);
+        return optionalPaziente.map(paziente -> new ResponseEntity<>(
+                                       new PazienteResponseDto(
+                                               paziente.getId(),
+                                               paziente.getNome(),
+                                               paziente.getCognome(),
+                                               paziente.getEmail(),
+                                               paziente.getContattoTelefonico(),
+                                               paziente.getCodiceFiscale(),
+                                               paziente.getIndirizzo(),
+                                               paziente.getAllergie(),
+                                               paziente.getStoricoMalattie(),
+                                               paziente.getListaAppuntamenti().stream().map(
+                                                       appuntamento -> new AppuntamentoMinimalNoPazienteResponseDto(
+                                                               appuntamento.getId(),
+                                                               appuntamento.getOrarioAppuntamento(),
+                                                               new MedicoMinimalResponseDto(
+                                                                       appuntamento.getMedico().getId(),
+                                                                       appuntamento.getMedico().getNome(),
+                                                                       appuntamento.getMedico().getCognome()
+                                                               )
+                                                       )
+                                                                                           ).collect(Collectors.toList()),
+                                               paziente.getListaMedici().stream().map(
+                                                       medico -> new MedicoMinimalResponseDto(
+                                                               medico.getId(),
+                                                               medico.getNome(),
+                                                               medico.getCognome()
+                                                       )
+                                                                                     ).collect(Collectors.toList())
+
+                                       )
+                                       , HttpStatus.OK))
+                               .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    public ResponseEntity<PazienteNoMedicoResponseDto> ricercaPazientePerMedico(Long idPaziente, Long idMedico) {
+        Optional<MedicoEntity> optionalMedico = medicoRepository.findByIdAndStato(idMedico, StatusEnumeration.A);
+        return optionalMedico.map(medico -> medico.getListaPazienti().stream()
+                                                  .filter(pazienteEntities -> Objects.equals(pazienteEntities.getId(),
+                                                                                             idPaziente))
+                                                  .findFirst()
+                                                  .map(paziente -> new ResponseEntity<>(
+                                                          new PazienteNoMedicoResponseDto(
+                                                                  paziente.getId(),
+                                                                  paziente.getNome(),
+                                                                  paziente.getCognome(),
+                                                                  paziente.getEmail(),
+                                                                  paziente.getContattoTelefonico(),
+                                                                  paziente.getCodiceFiscale(),
+                                                                  paziente.getIndirizzo(),
+                                                                  paziente.getAllergie(),
+                                                                  paziente.getStoricoMalattie(),
+                                                                  paziente.getListaAppuntamenti().stream().map(
+                                                                          appuntamento -> new AppuntamentoMinimalNoPazienteResponseDto(
+                                                                                  appuntamento.getId(),
+                                                                                  appuntamento.getOrarioAppuntamento(),
+                                                                                  new MedicoMinimalResponseDto(
+                                                                                          appuntamento.getMedico()
+                                                                                                      .getId(),
+                                                                                          appuntamento.getMedico()
+                                                                                                      .getNome(),
+                                                                                          appuntamento.getMedico()
+                                                                                                      .getCognome()
+                                                                                  )
+                                                                          )).collect(Collectors.toList())
+                                                          ), HttpStatus.OK))
+                                                  .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND))
+                                 ).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
 
-    /**
-     * questo metodo verifica l'esistenza "existsById" di un'entità Paziente nel database con un if,
-     * se l'entità non esiste viene lanciata un'eccezione "EntityNotFoundException" con un messaggio.
-     * Se l'entità "PazienteEntity" esiste, viene caricata dal database mediante la chiamata al metodo "findById" del repository.
-     * Il metodo controlla se i vari attributi dell'oggetto "pazienteEdit" sono diversi da null,
-     * e se lo sono, aggiorna l'attributo corrispondente dell'entità "paziente" con il valore dell'oggetto "pazienteEdit".
-     * Dopo aver aggiornato tutti gli attributi necessari dell'entità "paziente", viene chiamato il metodo "saveAndFlush"
-     * del repository per salvare l'entità aggiornata nel database.
-     * Infine, il metodo restituisce l'entità "paziente" aggiornata
-     */
-    public PazienteEntity modificaPaziente(PazienteEntity pazienteEdit, Long id) {
-        if (!pazienteRepository.existsById(id)) {
-            throw new EntityNotFoundException("Il paziente non esiste");
-        }
-        PazienteEntity paziente = pazienteRepository.findById(id).get();
+    public List<PazienteMinimalResponseDto> ricercaTuttiPazienti() {
+        return pazienteRepository.findByStato(StatusEnumeration.A)
+                                 .stream()
+                                 .map(paziente -> new PazienteMinimalResponseDto(paziente.getId(),
+                                                                                 paziente.getNome(),
+                                                                                 paziente.getCognome()))
+                                 .collect(Collectors.toList());
 
-        if (pazienteEdit.getNome() != null) {
-            paziente.setNome(pazienteEdit.getNome());
-        }
-        if (pazienteEdit.getCognome() != null) {
-            paziente.setCognome(pazienteEdit.getCognome());
-        }
-        if (pazienteEdit.getEmail() != null) {
-            paziente.setEmail(pazienteEdit.getEmail());
-        }
-        if (pazienteEdit.getContattoTelefonico() != null) {
-            paziente.setContattoTelefonico(pazienteEdit.getContattoTelefonico());
-        }
-        if (pazienteEdit.getCodiceFiscale() != null) {
-            paziente.setCodiceFiscale(pazienteEdit.getCodiceFiscale());
-        }
-        if (pazienteEdit.getIndirizzo() != null) {
-            paziente.setIndirizzo(pazienteEdit.getIndirizzo());
-        }
-        if (pazienteEdit.getAllergie() != null) {
-            paziente.setAllergie(pazienteEdit.getAllergie());
-        }
-        if (pazienteEdit.getStoricoMalattie() != null) {
-            paziente.setStoricoMalattie(pazienteEdit.getStoricoMalattie());
-        }
-        return pazienteRepository.save(paziente);
     }
 
-    public String cancellaPaziente(Long id, HttpServletResponse response) {
-        if (pazienteRepository.existsById(id)) {
-            PazienteEntity pazienteEntity = pazienteRepository.findById(id).get();
-            pazienteEntity.setStato(StatusEnumeration.D);
-            pazienteRepository.save(pazienteEntity);
-        } else {
-            response.setStatus(409);
-            return "Errore: l'id selezionato non esiste";
-        }
-        return "L'utente paziente è stato disattivato";
+
+    public ResponseEntity<PazienteEntity> modificaPaziente(PazienteRequestDto pazienteRequestDto, Long id) {
+        Optional<PazienteEntity> optionalPaziente = pazienteRepository.findByIdAndStato(id, StatusEnumeration.A);
+        return optionalPaziente.map(paziente -> {
+            paziente.setNome(pazienteRequestDto.getNome());
+            paziente.setCognome(pazienteRequestDto.getCognome());
+            paziente.setEmail(pazienteRequestDto.getEmail());
+            paziente.setContattoTelefonico(pazienteRequestDto.getContattoTelefonico());
+            paziente.setCodiceFiscale(pazienteRequestDto.getCodiceFiscale());
+            paziente.setIndirizzo(pazienteRequestDto.getIndirizzo());
+            paziente.setAllergie(pazienteRequestDto.getAllergie());
+            paziente.setStoricoMalattie(pazienteRequestDto.getStoricoMalattie());
+
+            paziente.setDataUltimaModifica(new Date(System.currentTimeMillis()));
+            paziente.setUltimaModificaDa("Gruppo 5");
+
+            pazienteRepository.save(paziente);
+            return new ResponseEntity<>(paziente, HttpStatus.OK);
+        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
     }
 
-    public String riattivaPaziente(Long id, HttpServletResponse response) {
-        if (pazienteRepository.existsById(id)) {
-            PazienteEntity pazienteEntity = pazienteRepository.findById(id).get();
-            pazienteEntity.setStato(StatusEnumeration.A);
-            pazienteRepository.save(pazienteEntity);
-        } else {
-            response.setStatus(409);
-            return "Errore: l'id selezionato non esiste";
-        }
-        return "L'utente paziente è stato attivato";
+    public ResponseEntity<String> disattivaPaziente(Long id) {
+        Optional<PazienteEntity> optionalPaziente = pazienteRepository.findByIdAndStato(id, StatusEnumeration.A);
+        return optionalPaziente.map(paziente -> {
+            paziente.setStato(StatusEnumeration.D);
+            pazienteRepository.save(paziente);
+            return new ResponseEntity<>("Il paziente è stato disattivato", HttpStatus.OK);
+        }).orElse(new ResponseEntity<>("Errore: l'id selezionato non esiste", HttpStatus.NOT_FOUND));
+
     }
+
+    public ResponseEntity<String> riattivaPaziente(Long id) {
+        Optional<PazienteEntity> optionalPaziente = pazienteRepository.findByIdAndStato(id, StatusEnumeration.D);
+        return optionalPaziente.map(paziente -> {
+                                   paziente.setStato(StatusEnumeration.A);
+                                   pazienteRepository.save(paziente);
+                                   return new ResponseEntity<>("Il paziente è stato riattivato", HttpStatus.OK);
+                               })
+                               .orElse(new ResponseEntity<>("Errore: l'id selezionato non esiste o non e' disattivato",
+                                                            HttpStatus.NOT_FOUND));
+
+    }
+
 }

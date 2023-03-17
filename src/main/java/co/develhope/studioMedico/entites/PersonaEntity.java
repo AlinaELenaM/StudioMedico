@@ -20,10 +20,10 @@ public abstract class PersonaEntity {
     @Column(name = "contatto_telefonico", nullable = false, unique = true)
     private String contattoTelefonico;
 
-    @Column(name = "creato_Da", updatable = false)
-    private String creatoDa;
+    @Column(name = "creato_da", updatable = false)
+    private final String creatoDa;
     @Column(name = "data_creazione", updatable = false)
-    private Date dataCreazione = new Date(System.currentTimeMillis());
+    private final Date dataCreazione = new Date(System.currentTimeMillis());
     @Column(name = "ultima_modifica_da")
     private String ultimaModificaDa;
     @Column(name = "data_ultima_modifica")
@@ -32,19 +32,13 @@ public abstract class PersonaEntity {
     @Enumerated(EnumType.STRING)
     private StatusEnumeration stato = StatusEnumeration.A;
 
-    public PersonaEntity() {
-    }
 
-    public PersonaEntity(String nome, String cognome, String email, String contattoTelefonico, String creatoDa, Date dataCreazione, String ultimaModificaDa, Date dataUltimaModifica, StatusEnumeration stato) {
+    public PersonaEntity(String nome, String cognome, String email, String contattoTelefonico, String creatoDa) {
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
         this.contattoTelefonico = contattoTelefonico;
         this.creatoDa = creatoDa;
-        this.dataCreazione = dataCreazione;
-        this.ultimaModificaDa = ultimaModificaDa;
-        this.dataUltimaModifica = dataUltimaModifica;
-        this.stato = stato;
     }
 
     public String getNome() {
@@ -83,17 +77,11 @@ public abstract class PersonaEntity {
         return creatoDa;
     }
 
-    public void setCreatoDa(String creatoDa) {
-        this.creatoDa = creatoDa;
-    }
 
     public Date getDataCreazione() {
         return dataCreazione;
     }
 
-    public void setDataCreazione(Date dataCreazione) {
-        this.dataCreazione = dataCreazione;
-    }
 
     public String getUltimaModificaDa() {
         return ultimaModificaDa;

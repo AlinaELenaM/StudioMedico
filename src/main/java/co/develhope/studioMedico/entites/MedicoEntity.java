@@ -1,10 +1,8 @@
 package co.develhope.studioMedico.entites;
 
 import co.develhope.studioMedico.enums.GiorniLavorativiEnum;
-import co.develhope.studioMedico.enums.StatusEnumeration;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.util.List;
 
 @Table(name = "medico")
@@ -32,19 +30,14 @@ public class MedicoEntity extends PersonaEntity {
     @ManyToMany(mappedBy = "listaMedici")
     private List<SegretarioEntity> listaSegretari;
 
-    public MedicoEntity() {
-    }
 
-    public MedicoEntity(String nome, String cognome, String email, String contattoTelefonico, String creatoDa, Date dataCreazione, String ultimaModificaDa, Date dataUltimaModifica, StatusEnumeration stato, Long id, String specializzazione, String sedeLavoro, List<GiorniLavorativiEnum> giorniLavorativi, List<AppuntamentoEntity> listaAppuntamenti, List<PazienteEntity> listaPazienti, List<SegretarioEntity> listaSegretari) {
-        super(nome, cognome, email, contattoTelefonico, creatoDa, dataCreazione, ultimaModificaDa, dataUltimaModifica, stato);
-        this.id = id;
+    public MedicoEntity(String nome, String cognome, String email, String contattoTelefonico, String specializzazione, String sedeLavoro, List<GiorniLavorativiEnum> giorniLavorativi, String creatoDa) {
+        super(nome, cognome, email, contattoTelefonico, creatoDa);
         this.specializzazione = specializzazione;
         this.sedeLavoro = sedeLavoro;
         this.giorniLavorativi = giorniLavorativi;
-        this.listaAppuntamenti = listaAppuntamenti;
-        this.listaPazienti = listaPazienti;
-        this.listaSegretari = listaSegretari;
     }
+
 
     public Long getId() {
         return id;

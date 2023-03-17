@@ -13,21 +13,20 @@ import java.time.LocalDateTime;
 public class AppuntamentoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @NotNull
     @Column(name = "id_appuntamento", nullable = false)
-    private Long idAppuntamento;
+    private Long id;
     @NotNull
     @Column(name = "orario_appuntamento", nullable = false)
     private LocalDateTime orarioAppuntamento;
     @Enumerated(EnumType.STRING)
-    private StatoAppuntamentoEnum statoAppuntamento;
+    private StatoAppuntamentoEnum statoAppuntamento = StatoAppuntamentoEnum.PRENOTATO;
     @Column(name = "note")
     private String noteAppuntamento;
 
-    @Column(name = "creato_Da", updatable = false)
-    private String creatoDa;
+    @Column(name = "creato_da", updatable = false)
+    private final String creatoDa;
     @Column(name = "data_creazione", updatable = false)
-    private Date dataCreazione = new Date(System.currentTimeMillis());
+    private final Date dataCreazione = new Date(System.currentTimeMillis());
     @Column(name = "ultima_modifica_da")
     private String ultimaModificaDa;
     @Column(name = "data_ultima_modifica")
@@ -47,32 +46,22 @@ public class AppuntamentoEntity {
     @NotNull
     private MedicoEntity medico;
 
-    public AppuntamentoEntity() {
-    }
 
-    public AppuntamentoEntity(Long idAppuntamento, LocalDateTime orarioAppuntamento,
-                              StatoAppuntamentoEnum statoAppuntamento, String noteAppuntamento, String creatoDa,
-                              Date dataCreazione, String ultimaModificaDa, Date dataUltimaModifica,
-                              StatusEnumeration stato, PazienteEntity paziente, MedicoEntity medico) {
-        this.idAppuntamento = idAppuntamento;
+    public AppuntamentoEntity(LocalDateTime orarioAppuntamento, String noteAppuntamento, PazienteEntity paziente, MedicoEntity medico, String creatoDa) {
         this.orarioAppuntamento = orarioAppuntamento;
-        this.statoAppuntamento = statoAppuntamento;
         this.noteAppuntamento = noteAppuntamento;
         this.creatoDa = creatoDa;
-        this.dataCreazione = dataCreazione;
-        this.ultimaModificaDa = ultimaModificaDa;
-        this.dataUltimaModifica = dataUltimaModifica;
-        this.stato = stato;
         this.paziente = paziente;
         this.medico = medico;
     }
 
-    public Long getIdAppuntamento() {
-        return idAppuntamento;
+
+    public Long getId() {
+        return id;
     }
 
-    public void setIdAppuntamento(Long idAppuntamento) {
-        this.idAppuntamento = idAppuntamento;
+    public void setId(Long idAppuntamento) {
+        this.id = idAppuntamento;
     }
 
     public LocalDateTime getOrarioAppuntamento() {
@@ -103,17 +92,11 @@ public class AppuntamentoEntity {
         return creatoDa;
     }
 
-    public void setCreatoDa(String creatoDa) {
-        this.creatoDa = creatoDa;
-    }
 
     public Date getDataCreazione() {
         return dataCreazione;
     }
 
-    public void setDataCreazione(Date dataCreazione) {
-        this.dataCreazione = dataCreazione;
-    }
 
     public String getUltimaModificaDa() {
         return ultimaModificaDa;

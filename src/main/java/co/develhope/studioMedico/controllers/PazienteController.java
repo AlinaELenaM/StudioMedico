@@ -1,7 +1,7 @@
 package co.develhope.studioMedico.controllers;
 
-import co.develhope.studioMedico.entites.AppuntamentoEntity;
-import co.develhope.studioMedico.entites.PazienteEntity;
+import co.develhope.studioMedico.dto.response.appuntamento.AppuntamentoNoPazienteResponseDto;
+import co.develhope.studioMedico.dto.response.paziente.PazienteResponseDto;
 import co.develhope.studioMedico.services.AppuntamentoService;
 import co.develhope.studioMedico.services.PazienteService;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +28,14 @@ public class PazienteController {
      * @param id id
      * @return il paziente tramite id
      */
-    @GetMapping("/leggi_paziente/{id}")
-    public PazienteEntity leggiPaziente(@PathVariable Long id) throws Exception {
-        return pazienteService.visualizzaPaziente(id);
+    @GetMapping("/paziente_ricerca/{id}")
+    public ResponseEntity<PazienteResponseDto> ricercaPaziente(@PathVariable Long id) {
+        return pazienteService.ricercaPaziente(id);
     }
 
-    @GetMapping("leggi_appuntamento/{id}")
-    public ResponseEntity<AppuntamentoEntity> cercaAppuntamentoPerId(@PathVariable Long id) {
-        return appuntamentoService.cercaAppuntamentoPerId(id);
+    @GetMapping("/{idPaziente}/appuntamento_ricerca/{idAppuntamento}")
+    public ResponseEntity<AppuntamentoNoPazienteResponseDto> ricercaAppuntamentoPerPaziente(@PathVariable Long idAppuntamento, @PathVariable Long idPaziente) {
+        return appuntamentoService.ricercaAppuntamentoPerPaziente(idAppuntamento, idPaziente);
     }
 
 }

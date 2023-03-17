@@ -1,50 +1,46 @@
 package co.develhope.studioMedico.controllers;
 
-import co.develhope.studioMedico.entites.AppuntamentoEntity;
-import co.develhope.studioMedico.entites.MedicoEntity;
-import co.develhope.studioMedico.entites.PazienteEntity;
+import co.develhope.studioMedico.dto.response.appuntamento.AppuntamentoNoMedicoResponseDto;
+import co.develhope.studioMedico.dto.response.medico.MedicoResponseDto;
+import co.develhope.studioMedico.dto.response.paziente.PazienteNoMedicoResponseDto;
 import co.develhope.studioMedico.services.AppuntamentoService;
 import co.develhope.studioMedico.services.MedicoService;
 import co.develhope.studioMedico.services.PazienteService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/medico")
 public class MedicoController {
-    @Autowired
-    private MedicoService medicoService;
-    @Autowired
-    private PazienteService pazienteService;
-    @Autowired
-    private AppuntamentoService appuntamentoService;
+    private final MedicoService medicoService;
+    private final PazienteService pazienteService;
+    private final AppuntamentoService appuntamentoService;
 
-
-    /**
-     * Restituisce il paziente tramite id.
-     *
-     * @param id id
-     * @return il paziente tramite id
-     */
-    @GetMapping("/paziente/visualizza/{id}")
-    public PazienteEntity leggiPaziente(@PathVariable Long id) throws Exception {
-        return pazienteService.visualizzaPaziente(id);
+    public MedicoController(MedicoService medicoService, PazienteService pazienteService, AppuntamentoService appuntamentoService) {
+        this.medicoService = medicoService;
+        this.pazienteService = pazienteService;
+        this.appuntamentoService = appuntamentoService;
     }
 
-    @GetMapping("/medico/visualizza/{id}")
-    public MedicoEntity singoloMedico(@PathVariable Long id) throws Exception {
-        return medicoService.visualizzaMedico(id);
+
+    @GetMapping("/{idMedico}/paziente_ricerca/{idPaziente}")
+    public ResponseEntity<PazienteNoMedicoResponseDto> ricercaPazientePerMedico(@PathVariable Long idPaziente, @PathVariable Long idMedico) {
+        return pazienteService.ricercaPazientePerMedico(idPaziente, idMedico);
     }
 
-    @GetMapping("/appuntamento/visualizza/{id}")
-    public ResponseEntity<AppuntamentoEntity> cercaAppuntamentoPerId(@PathVariable Long id) throws Exception {
-        return appuntamentoService.cercaAppuntamentoPerId(id);
+    @GetMapping("/medico_ricerca/{id}")
+    public ResponseEntity<MedicoResponseDto> ricercaMedico(@PathVariable Long id) {
+        return medicoService.ricercaMedico(id);
     }
 
-    @DeleteMapping("/appuntamento/cancella/{id}")
-    public ResponseEntity<String> cancellaAppuntamentoById(@PathVariable Long id) {
-        return appuntamentoService.cancellaAppuntamento(id);
+    @GetMapping("/{idMedico}/appuntamento_ricerca/{idAppuntamento}")
+    public ResponseEntity<AppuntamentoNoMedicoResponseDto> ricercaAppuntamentoPerMedico(@PathVariable Long idAppuntamento, @PathVariable Long idMedico) {
+        return appuntamentoService.ricercaAppuntamentoPerMedico(idAppuntamento, idMedico);
+    }
+
+    @DeleteMapping("/appuntamento_disattiva/{id}")
+    public ResponseEntity<String> disattivaAppuntamento(@PathVariable Long id) {
+        return appuntamentoService.disattivaAppuntamento(id);
     }
 
 }

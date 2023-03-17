@@ -1,10 +1,19 @@
 package co.develhope.studioMedico.controllers;
 
 
-import co.develhope.studioMedico.entites.AppuntamentoEntity;
-import co.develhope.studioMedico.entites.MedicoEntity;
-import co.develhope.studioMedico.entites.PazienteEntity;
-import co.develhope.studioMedico.entites.SegretarioEntity;
+import co.develhope.studioMedico.dto.request.AppuntamentoRequestDto;
+import co.develhope.studioMedico.dto.request.MedicoRequestDto;
+import co.develhope.studioMedico.dto.request.PazienteRequestDto;
+import co.develhope.studioMedico.dto.request.SegretarioRequestDto;
+import co.develhope.studioMedico.dto.response.appuntamento.AppuntamentoMinimalResponseDto;
+import co.develhope.studioMedico.dto.response.appuntamento.AppuntamentoResponseDto;
+import co.develhope.studioMedico.dto.response.medico.MedicoMinimalResponseDto;
+import co.develhope.studioMedico.dto.response.medico.MedicoResponseDto;
+import co.develhope.studioMedico.dto.response.paziente.PazienteMinimalResponseDto;
+import co.develhope.studioMedico.dto.response.paziente.PazienteResponseDto;
+import co.develhope.studioMedico.dto.response.segretario.SegretarioMinimalResponseDto;
+import co.develhope.studioMedico.dto.response.segretario.SegretarioResponseDto;
+import co.develhope.studioMedico.enums.StatoAppuntamentoEnum;
 import co.develhope.studioMedico.services.AppuntamentoService;
 import co.develhope.studioMedico.services.MedicoService;
 import co.develhope.studioMedico.services.PazienteService;
@@ -13,7 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -31,159 +39,158 @@ public class SegretarioController {
         this.pazienteService = pazienteService;
         this.appuntamentoService = appuntamentoService;
     }
-//TODO refactoring dei nomi metodi piu' parlanti
+
     //METODI PER IL MEDICO
 
-    @PostMapping("/crea_medico")
-    public ResponseEntity<String> creaNuovoMedico(@RequestBody MedicoEntity medicoEntity) {
-        // medicoService.creaMedico(medicoEntity);
+    @PostMapping("/medico_crea")
+    public ResponseEntity<String> creaNuovoMedico(@RequestBody MedicoRequestDto medicoRequestDto) {
+        medicoService.creaMedico(medicoRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Medico creato correttamente");
     }
 
-    @GetMapping("leggi_medico/{id}")
-    public MedicoEntity singoloMedico(@PathVariable Long id) throws RuntimeException {
-        return medicoService.visualizzaMedico(id);
+
+    @GetMapping("/medico_ricerca/{id}")
+    public ResponseEntity<MedicoResponseDto> ricercaMedicoPerId(@PathVariable Long id) {
+        return medicoService.ricercaMedico(id);
     }
 
-    @GetMapping("/lista_medici")
-    public List<MedicoEntity> listaMedici() {
-        return medicoService.visualizzaListaMedici();
+    @GetMapping("/medico_ricerca_tutti")
+    public List<MedicoMinimalResponseDto> ricercaTuttiMedici() {
+        return medicoService.ricercaTuttiMedici();
     }
 
-    @PutMapping("/modifica_medico/{id}")
-    public ResponseEntity<String> modificaMedico(@RequestBody MedicoEntity medico, @PathVariable Long id) {
-        // medicoService.modficaMedico(medico, id);
+
+    @PutMapping("/medico_modifica/{id}")
+    public ResponseEntity<String> modificaMedico(@RequestBody MedicoRequestDto medicoRequestDto, @PathVariable Long id) {
+        medicoService.modificaMedico(medicoRequestDto, id);
         return ResponseEntity.status(200).body("Medico modificato correttamente");
     }
 
-    @DeleteMapping("/elimina_medico/{id}")
-    public String cancellaMedico(@PathVariable Long id, HttpServletResponse response) {
-        return medicoService.cancellaMedico(id, response);
+
+    @DeleteMapping("/medico_disattiva/{id}")
+    public ResponseEntity<String> disattivaMedico(@PathVariable Long id) {
+        return medicoService.disattivaMedico(id);
     }
 
-    @PutMapping("/riattiva_medico/{id}")
-    public String riattivaMedico(@PathVariable Long id, HttpServletResponse response) {
-        return medicoService.riattivaMedico(id, response);
+
+    @PutMapping("/medico_riattiva/{id}")
+    public ResponseEntity<String> riattivaMedico(@PathVariable Long id) {
+        return medicoService.riattivaMedico(id);
     }
 
     //METODI PER IL PAZIENTE
 
-    @PostMapping("/crea_paziente")
-    public ResponseEntity<String> creaPazente(@RequestBody PazienteEntity paziente) {
-        pazienteService.creaPaziente(paziente);
+    @PostMapping("/paziente_crea")
+    public ResponseEntity<String> creaPazente(@RequestBody PazienteRequestDto pazienteRequestDto) {
+        pazienteService.creaPaziente(pazienteRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Paziente creato correttamente");
     }
 
-    /**
-     * Restituisce il paziente tramite id.
-     *
-     * @param id id
-     * @return il paziente tramite id
-     */
-    @GetMapping("/leggi_paziente/{id}")
-    public PazienteEntity leggiPaziente(@PathVariable Long id) throws Exception {
-        return pazienteService.visualizzaPaziente(id);
+
+    @GetMapping("/paziente_ricerca/{id}")
+    public ResponseEntity<PazienteResponseDto> ricercaPazientePerId(@PathVariable Long id) {
+        return pazienteService.ricercaPaziente(id);
     }
 
-    /**
-     * Restituisce la lista dei pazienti.
-     *
-     * @return la list
-     */
-    @GetMapping({"/lista_pazienti"})
-    public List<PazienteEntity> listaPazienti() {
-        return pazienteService.visualizzaListaPazienti();
+
+    @GetMapping({"/paziente_ricerca_tutti"})
+    public List<PazienteMinimalResponseDto> ricercaTuttiPazienti() {
+        return pazienteService.ricercaTuttiPazienti();
     }
 
-    /**
-     * Update del paziente tramite id, restituisce una response entity di status 200.
-     *
-     * @param pazienteEdit la modifica al paziente
-     * @param id           id
-     * @return la response entity di status 200 la richiesta del client al server è stata completata con successo.
-     */
-    @PutMapping("/modifica_paziente/{id}")
-    public ResponseEntity<String> modificaPazienteConId(@RequestBody PazienteEntity pazienteEdit, @PathVariable Long id) {
-        pazienteService.modificaPaziente(pazienteEdit, id);
+
+    @PutMapping("/paziente_modifica/{id}")
+    public ResponseEntity<String> modificaPaziente(@RequestBody PazienteRequestDto pazienteRequestDto, @PathVariable Long id) {
+        pazienteService.modificaPaziente(pazienteRequestDto, id);
         return ResponseEntity.status(200).body("Paziente modificato correttamente");
     }
 
-    @DeleteMapping("/elimina_paziente/{id}")
-    public String cancellaPaziente(@PathVariable Long id, HttpServletResponse response) {
-        return pazienteService.cancellaPaziente(id, response);
+    @DeleteMapping("/paziente_disattiva/{id}")
+    public ResponseEntity<String> disattivaPaziente(@PathVariable Long id) {
+        return pazienteService.disattivaPaziente(id);
     }
 
-    @PutMapping("/riattiva_paziente/{id}")
-    public String riattivaPaziente(@PathVariable Long id, HttpServletResponse response) {
-        return pazienteService.riattivaPaziente(id, response);
+    @PutMapping("/paziente_riattiva/{id}")
+    public ResponseEntity<String> riattivaPaziente(@PathVariable Long id) {
+        return pazienteService.riattivaPaziente(id);
     }
 
     //METODI PER IL SEGRETARIO
 
-    @PostMapping("/crea_segretario")
-    public ResponseEntity<String> creaSegretario(@RequestBody SegretarioEntity segretarioEntity) {
-        segretarioService.creaSegretario(segretarioEntity);
+    @PostMapping("/segretario_crea")
+    public ResponseEntity<String> creaSegretario(@RequestBody SegretarioRequestDto segretarioRequestDto) {
+        segretarioService.creaSegretario(segretarioRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Segretario creato correttamente");
     }
 
-    @GetMapping("leggi_segretario/{id}")
-    public SegretarioEntity singoloSegretario(@PathVariable Long id) throws Exception {
-        return segretarioService.visualizzaSegretario(id);
+    @GetMapping("/segretario_ricerca/{id}")
+    public ResponseEntity<SegretarioResponseDto> ricercaSegretario(@PathVariable Long id) {
+        return segretarioService.ricercaSegretario(id);
     }
 
-    @GetMapping("/lista_segretari")
-    public List<SegretarioEntity> listaSegretario() {
-        return segretarioService.visualizzaListaSegretari();
+    @GetMapping("/segretario_ricerca_tutti")
+    public List<SegretarioMinimalResponseDto> ricercaTuttiSegretari() {
+        return segretarioService.ricercaTuttiSegretari();
     }
 
-    @PutMapping("/modifica_segretario/{id}")
-    public ResponseEntity<String> modificaMedico(@RequestBody SegretarioEntity segretario, @PathVariable Long id) {
-        segretarioService.modificaSegretario(segretario, id);
+    @PutMapping("/segretario_modifica/{id}")
+    public ResponseEntity<String> modificaSegretario(@RequestBody SegretarioRequestDto segretarioRequestDto, @PathVariable Long id) {
+        segretarioService.modificaSegretario(segretarioRequestDto, id);
         return ResponseEntity.status(200).body("Segretario modificato correttamente");
     }
 
-    @DeleteMapping("/elimina_segretario/{id}")
-    public String cancellaSegretarioById(@PathVariable Long id, HttpServletResponse response) {
-        return segretarioService.cancellaSegretario(id, response);
+    @DeleteMapping("/segretario_disattiva/{id}")
+    public ResponseEntity<String> disattivaSegretario(@PathVariable Long id) {
+        return segretarioService.disattivaSegretario(id);
     }
 
-    @PutMapping("/riattiva_segretario/{id}")
-    public String riattivaSegretarioById(@PathVariable Long id, HttpServletResponse response) {
-        return segretarioService.riattivaSegretario(id, response);
+    @PutMapping("/segretario_riattiva/{id}")
+    public ResponseEntity<String> riattivaSegretario(@PathVariable Long id) {
+        return segretarioService.riattivaSegretario(id);
     }
 
     //METODI APPUNTAMENTO
 
-    @PostMapping("/appuntamento/crea")
-    public ResponseEntity<String> creaAppuntamento(@RequestBody AppuntamentoEntity appuntamentoEntity) {
-        appuntamentoService.creaAppuntamento(appuntamentoEntity);
+    @PostMapping("/appuntamento_crea")
+    public ResponseEntity<String> creaAppuntamento(@RequestBody AppuntamentoRequestDto appuntamentoRequestDto) {
+        appuntamentoService.creaAppuntamento(appuntamentoRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Appuntamento creato correttamente!");
     }
 
-    //TODO aggiungere validazione body richiesta in creazione e modifica appuntamento(vale per tutte le entity)
-    @GetMapping("/appuntamento/cerca/{id}")
-    public ResponseEntity<AppuntamentoEntity> cercaAppuntamentoPerId(@PathVariable Long id) throws Exception {
-        return appuntamentoService.cercaAppuntamentoPerId(id);
+    @GetMapping("/appuntamento_ricerca/{id}")
+    public ResponseEntity<AppuntamentoResponseDto> ricercaAppuntamento(@PathVariable Long id) throws Exception {
+        return appuntamentoService.ricercaAppuntamento(id);
     }
 
-    @GetMapping("/appuntamento/cerca/tutti")
-    public List<AppuntamentoEntity> cercaTuttiAppuntamenti() {
-        return appuntamentoService.cercaTuttiAppuntamenti();
+
+    @GetMapping("/appuntamento_ricerca_tutti")
+    public List<AppuntamentoMinimalResponseDto> ricercaTuttiAppuntamenti() {
+        return appuntamentoService.ricercaTuttiAppuntamenti();
     }
 
-    @PutMapping("/appuntamento/modifica/{id}")
-    public ResponseEntity<String> modificaAppuntamento(@RequestBody AppuntamentoEntity appuntamentoEntity, @PathVariable Long id) {
-        appuntamentoService.modificaAppuntamento(appuntamentoEntity, id);
+    @GetMapping("/appuntamento_ricerca_per_stato")
+    public List<AppuntamentoMinimalResponseDto> ricercaTuttiAppuntamentiPerStato(@RequestParam StatoAppuntamentoEnum statoAppuntamento) {
+        return appuntamentoService.ricercaTuttiAppuntamentiPerStato(statoAppuntamento);
+    }
+
+    @PutMapping("/appuntamento_modifica/{id}")
+    public ResponseEntity<String> modificaAppuntamento(@RequestBody AppuntamentoRequestDto appuntamentoRequestDto, @PathVariable Long id) {
+        appuntamentoService.modificaAppuntamento(appuntamentoRequestDto, id);
         return ResponseEntity.status(200).body("Appuntamento modificato correttamente!");
     }
 
-    @DeleteMapping("/appuntamento/cancella/{id}")
-    public ResponseEntity<String> cancellaAppuntamentoById(@PathVariable Long id) {
-        return appuntamentoService.cancellaAppuntamento(id);
+    @DeleteMapping("/appuntamento_disattiva/{id}")
+    public ResponseEntity<String> disattivaAppuntamento(@PathVariable Long id) {
+        return appuntamentoService.disattivaAppuntamento(id);
     }
 
-    @PutMapping("/appuntamento/riattiva/{id}")
-    public ResponseEntity<String> riattivaAppuntamentoById(@PathVariable Long id) {
+    @PutMapping("/appuntamento_riattiva/{id}")
+    public ResponseEntity<String> riattivaAppuntamento(@PathVariable Long id) {
         return appuntamentoService.riattivaAppuntamento(id);
+    }
+
+    @DeleteMapping("/appuntamento_cancella/{id}")
+    public ResponseEntity<String> cancellaAppuntamento(@PathVariable Long id) {
+        return appuntamentoService.cancellaAppuntamento(id);
     }
 }

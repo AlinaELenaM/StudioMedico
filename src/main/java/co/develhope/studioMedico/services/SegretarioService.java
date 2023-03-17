@@ -1,87 +1,115 @@
 package co.develhope.studioMedico.services;
 
+import co.develhope.studioMedico.dto.request.SegretarioRequestDto;
+import co.develhope.studioMedico.dto.response.segretario.SegretarioMinimalResponseDto;
+import co.develhope.studioMedico.dto.response.segretario.SegretarioResponseDto;
 import co.develhope.studioMedico.entites.SegretarioEntity;
 import co.develhope.studioMedico.enums.StatusEnumeration;
+import co.develhope.studioMedico.repositories.MedicoRepository;
 import co.develhope.studioMedico.repositories.SegretarioRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletResponse;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SegretarioService {
     private final SegretarioRepository segretarioRepository;
+    private final MedicoRepository medicoRepository;
 
-    public SegretarioService(SegretarioRepository segretarioRepository) {
+    public SegretarioService(SegretarioRepository segretarioRepository, MedicoRepository medicoRepository) {
         this.segretarioRepository = segretarioRepository;
+        this.medicoRepository = medicoRepository;
     }
 
 
-    public SegretarioEntity creaSegretario(SegretarioEntity segretarioEntity) {
+    public SegretarioEntity creaSegretario(SegretarioRequestDto segretarioRequestDto) throws RuntimeException {
+        SegretarioEntity segretarioEntity = new SegretarioEntity(
+                segretarioRequestDto.getNome(),
+                segretarioRequestDto.getCognome(),
+                segretarioRequestDto.getEmail(),
+                segretarioRequestDto.getContattoTelefonico(),
+                segretarioRequestDto.getSedeLavoro(),
+                "Gruppo 5"
+        );
+        segretarioEntity.setListaMedici(segretarioRequestDto
+                                                .getListaIdMedici().stream()
+                                                .map(medicoId -> medicoRepository.findByIdAndStato(medicoId,
+                                                                                                   StatusEnumeration.A)
+                                                                                 .orElseThrow(() -> new RuntimeException(
+                                                                                         "Medico con id " + medicoId + " non presente nel DB")))
+                                                .collect(Collectors.toList()));
+
         return segretarioRepository.save(segretarioEntity);
     }
 
-    public SegretarioEntity visualizzaSegretario(Long id) throws Exception {
-        if (segretarioRepository.findById(id) == null) {
-            throw new Exception("Questo segretario non esiste nel database");
-        }
-        SegretarioEntity segretarioEntity = segretarioRepository.findById(id).get();
-        if (segretarioEntity.getStato() == StatusEnumeration.D)
-            throw new Exception("Errore: l'utente segretario è disattivo!");
-        return segretarioEntity;
+    public ResponseEntity<SegretarioResponseDto> ricercaSegretario(Long id) {
+        Optional<SegretarioEntity> optionalSegretario = segretarioRepository.findByIdAndStato(id, StatusEnumeration.A);
+        return optionalSegretario.map(segretario -> new ResponseEntity<>(new SegretarioResponseDto(
+                                         segretario.getId(),
+                                         segretario.getNome(),
+                                         segretario.getCognome(),
+                                         segretario.getEmail(),
+                                         segretario.getContattoTelefonico(),
+                                         segretario.getSedeLavoro(),
+                                         new ArrayList<>()//TODO da modificare con MedicoMinimalDTO
+                                 ), HttpStatus.OK))
+                                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    public List<SegretarioEntity> visualizzaListaSegretari() {
-        return segretarioRepository.findByStato(StatusEnumeration.A);
+    public List<SegretarioMinimalResponseDto> ricercaTuttiSegretari() {
+
+        return segretarioRepository.findByStato(StatusEnumeration.A)
+                                   .stream()
+                                   .map(segretario -> new SegretarioMinimalResponseDto(segretario.getId(),
+                                                                                       segretario.getNome(),
+                                                                                       segretario.getCognome()))
+                                   .collect(Collectors.toList());
     }
 
-    public SegretarioEntity modificaSegretario(SegretarioEntity segretarioEntity, Long id) {
-        if (!segretarioRepository.existsById(id)) {
-            throw new EntityNotFoundException("Il Medico non esiste");
-        }
-        SegretarioEntity segretario = segretarioRepository.findById(id).get();
+    public ResponseEntity<SegretarioEntity> modificaSegretario(SegretarioRequestDto segretarioRequestDto, Long id) {
+        Optional<SegretarioEntity> optionalSegretario = segretarioRepository.findByIdAndStato(id, StatusEnumeration.A);
+        return optionalSegretario.map(segretario -> {
+            segretario.setNome(segretarioRequestDto.getNome());
+            segretario.setCognome(segretarioRequestDto.getCognome());
+            segretario.setEmail(segretarioRequestDto.getEmail());
+            segretario.setContattoTelefonico(segretarioRequestDto.getContattoTelefonico());
+            segretario.setSedeLavoro(segretarioRequestDto.getSedeLavoro());
 
-        if (segretarioEntity.getNome() != null) {
-            segretario.setNome(segretarioEntity.getNome());
-        }
-        if (segretarioEntity.getCognome() != null) {
-            segretario.setCognome(segretarioEntity.getCognome());
-        }
-        if (segretarioEntity.getEmail() != null) {
-            segretario.setEmail(segretarioEntity.getEmail());
-        }
-        if (segretarioEntity.getContattoTelefonico() != null) {
-            segretario.setContattoTelefonico(segretarioEntity.getContattoTelefonico());
-        }
-        if (segretarioEntity.getSedeLavoro() != null) {
-            segretario.setSedeLavoro(segretarioEntity.getSedeLavoro());
-        }
-        return segretarioRepository.save(segretario);
+            segretario.setDataUltimaModifica(new Date(System.currentTimeMillis()));
+            segretario.setUltimaModificaDa("Gruppo 5");
+
+            segretarioRepository.save(segretario);
+            return new ResponseEntity<>(segretario, HttpStatus.OK);
+        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
     }
 
-    public String cancellaSegretario(Long id, HttpServletResponse response) {
-        if (segretarioRepository.existsById(id)) {
-            SegretarioEntity segretarioEntity = segretarioRepository.findById(id).get();
-            segretarioEntity.setStato(StatusEnumeration.D);
-            segretarioRepository.save(segretarioEntity);
-        } else {
-            response.setStatus(409);
-            return "Errore: l'id selezionato non esiste";
-        }
-        return "L'utente segretario è stato disattivato";
+    public ResponseEntity<String> disattivaSegretario(Long id) {
+        Optional<SegretarioEntity> optionalSegretario = segretarioRepository.findByIdAndStato(id, StatusEnumeration.A);
+        return optionalSegretario.map(segretario -> {
+            segretario.setStato(StatusEnumeration.D);
+            segretarioRepository.save(segretario);
+            return new ResponseEntity<>("Il segretario è stato disattivato", HttpStatus.OK);
+        }).orElse(new ResponseEntity<>("Errore: l'id selezionato non esiste", HttpStatus.NOT_FOUND));
+
     }
 
-    public String riattivaSegretario(Long id, HttpServletResponse response) {
-        if (segretarioRepository.existsById(id)) {
-            SegretarioEntity segretarioEntity = segretarioRepository.findById(id).get();
-            segretarioEntity.setStato(StatusEnumeration.A);
-            segretarioRepository.save(segretarioEntity);
-        } else {
-            response.setStatus(409);
-            return "Errore: l'id selezionato non esiste";
-        }
-        return "L'utente segretario è stato attivato";
+    public ResponseEntity<String> riattivaSegretario(Long id) {
+        Optional<SegretarioEntity> optionalSegretario = segretarioRepository.findByIdAndStato(id, StatusEnumeration.D);
+        return optionalSegretario.map(segretario -> {
+                                     segretario.setStato(StatusEnumeration.A);
+                                     segretarioRepository.save(segretario);
+                                     return new ResponseEntity<>("Il segretario è stato riattivato", HttpStatus.OK);
+                                 })
+                                 .orElse(new ResponseEntity<>("Errore: l'id selezionato non esiste o non e' disattivato",
+                                                              HttpStatus.NOT_FOUND));
+
     }
 
 

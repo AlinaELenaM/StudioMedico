@@ -1,9 +1,6 @@
 package co.develhope.studioMedico.entites;
 
-import co.develhope.studioMedico.enums.StatusEnumeration;
-
 import javax.persistence.*;
-import java.sql.Date;
 import java.util.List;
 
 @Entity
@@ -24,14 +21,11 @@ public class SegretarioEntity extends PersonaEntity {
             @JoinColumn(name = "id_medico", referencedColumnName = "id_medico"))
     private List<MedicoEntity> listaMedici;
 
-    public SegretarioEntity() {
-    }
 
-    public SegretarioEntity(String nome, String cognome, String email, String contattoTelefonico, String creatoDa, Date dataCreazione, String ultimaModificaDa, Date dataUltimaModifica, StatusEnumeration stato, Long id, String sedeLavoro, List<MedicoEntity> listaMedici) {
-        super(nome, cognome, email, contattoTelefonico, creatoDa, dataCreazione, ultimaModificaDa, dataUltimaModifica, stato);
-        this.id = id;
+    public SegretarioEntity(String nome, String cognome, String email, String contattoTelefonico, String sedeLavoro, String creatoDa) {
+        super(nome, cognome, email, contattoTelefonico, creatoDa);
         this.sedeLavoro = sedeLavoro;
-        this.listaMedici = listaMedici;
+
     }
 
     public Long getId() {
